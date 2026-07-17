@@ -50,6 +50,9 @@
       --pi-danger-text: #fca5a5;
       --cp-pink: #f472b6;
       --cp-green: #4ade80;
+      --team-device: #a78bfa;
+      --team-retail: #38bdf8;
+      --team-usage: #4ade80;
     }
 
     [data-theme="light"] {
@@ -72,6 +75,9 @@
       --pi-danger-text: #991b1b;
       --cp-pink: #be185d;
       --cp-green: #15803d;
+      --team-device: #6d28d9;
+      --team-retail: #0369a1;
+      --team-usage: #15803d;
     }
 
     * { box-sizing: border-box; }
@@ -449,6 +455,33 @@
     .fr-intro { padding: 14px 20px; border-bottom: 1px solid var(--border-dark); background: rgba(248,113,113,0.04); flex-shrink: 0; }
     .fr-intro h4 { margin:0 0 8px 0; font-size:12px; font-weight:700; color:var(--fr-accent); text-transform:uppercase; letter-spacing:0.04em; display:flex; align-items:center; gap:6px; }
     .fr-intro h4 .material-icons-round { font-size:15px !important; }
+
+    /* Team routing card — flat 3-column lookup showing which Fraud team owns which issue types.
+       Rendered dynamically into the "Fraud Routing / Reconciliation" accordion row (its natural
+       home — that section is already about ticket-close routing). Grid stays side-by-side at all
+       panel widths since responsive stacking would push accordion content below the fold. */
+    .fr-teams-block { padding:14px 20px; border-bottom:1px solid var(--border-dark); background:rgba(96,165,250,0.03); flex-shrink:0; }
+    .fr-teams-block--inline { padding:0; border-bottom:none; background:transparent; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-dark); }
+    .fr-teams-block--inline .fr-teams-header h4 { color:var(--fr-accent); }
+    .fr-teams-header { margin-bottom:10px; }
+    .fr-teams-header h4 { margin:0 0 3px 0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-white); display:flex; align-items:center; gap:6px; }
+    .fr-teams-header h4 .material-icons-round { font-size:14px !important; color:var(--text-muted); }
+    .fr-teams-header .fr-teams-sub { font-size:11px; color:var(--text-muted); margin:0; }
+    .fr-teams-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .fr-team-card { background:var(--input-bg); border:1px solid var(--border-dark); border-radius:var(--radius-md); padding:10px 11px; border-top-width:3px; display:flex; flex-direction:column; min-width:0; }
+    .fr-team-card.device { border-top-color:var(--team-device); }
+    .fr-team-card.retail { border-top-color:var(--team-retail); }
+    .fr-team-card.usage  { border-top-color:var(--team-usage); }
+    .fr-team-name { font-size:12px; font-weight:700; color:var(--text-white); margin-bottom:8px; display:flex; align-items:center; gap:5px; line-height:1.2; }
+    .fr-team-name .material-icons-round { font-size:14px !important; flex-shrink:0; }
+    .fr-team-card.device .fr-team-name .material-icons-round { color:var(--team-device); }
+    .fr-team-card.retail .fr-team-name .material-icons-round { color:var(--team-retail); }
+    .fr-team-card.usage  .fr-team-name .material-icons-round { color:var(--team-usage); }
+    .fr-team-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; }
+    .fr-team-list li { font-size:11px; line-height:1.4; color:var(--text-white); padding-left:11px; position:relative; }
+    .fr-team-list li::before { content:''; position:absolute; left:0; top:6px; width:4px; height:4px; border-radius:50%; background:var(--text-muted); }
+    .fr-team-list li .fr-inline-hint { display:block; margin-top:2px; font-size:10px; color:var(--text-muted); font-style:italic; line-height:1.45; }
+    .fr-team-list li .fr-inline-hint::before { content:'→ '; font-style:normal; color:var(--text-muted); }
 
     .fr-callout { display:flex; gap:8px; align-items:flex-start; background: rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:6px; padding:9px 12px; margin: 8px 0; font-size:12px; line-height:1.5; color: var(--fr-warning-text); }
     .fr-callout .material-icons-round { font-size:15px !important; color:var(--fr-warning-icon); flex-shrink:0; margin-top:1px; }
@@ -1099,6 +1132,48 @@
     </div>
     <div class="stale-note"><span class="material-icons-round">info</span>Loaded when the app started — refresh the page to pull the latest list.</div>
     <div id="fraud-guide-intro" style="display:none;"></div>
+    <template id="fr-teams-block-template">
+      <div class="fr-teams-block fr-teams-block--inline">
+        <div class="fr-teams-header">
+          <h4><span class="material-icons-round">groups</span>Fraud Teams</h4>
+          <p class="fr-teams-sub">Use the information below to determine which Fraud team handles the issue the customer is experiencing</p>
+        </div>
+        <div class="fr-teams-grid">
+          <div class="fr-team-card device">
+            <div class="fr-team-name"><span class="material-icons-round">phonelink</span>Device Fraud Investigations</div>
+            <ul class="fr-team-list">
+              <li>Customer claims device was "Hacked"</li>
+              <li>Unauthorized Device/SIM Change</li>
+              <li>Customer received an SMS or Email regarding unauthorized account activity/access</li>
+              <li>Unable to access customers account due to lock</li>
+              <li>Unauthorized Changes to account</li>
+              <li>Unauthorized Line Added (Added via Web, App or Agent)</li>
+              <li>Unauthorized Add-On</li>
+              <li>Unauthorized Base Plan Change</li>
+              <li>Domestic Dispute
+                <span class="fr-inline-hint">In situations involving family members, partners, etc. Inform the customer about splitting 1 or more phone numbers off of this account, and assist them if this is the request.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="fr-team-card retail">
+            <div class="fr-team-name"><span class="material-icons-round">storefront</span>Retail Fraud</div>
+            <ul class="fr-team-list">
+              <li>In-Store Transactions</li>
+              <li>Upset over plan change, misinformation, or device purchase at a store location</li>
+              <li>Any Fraud issue where a customer suspects a Retailer is at fault</li>
+            </ul>
+          </div>
+          <div class="fr-team-card usage">
+            <div class="fr-team-name"><span class="material-icons-round">signal_cellular_alt</span>Usage Fraud</div>
+            <ul class="fr-team-list">
+              <li>Disputing an account suspension (Line Restriction)</li>
+              <li>Unauthorized Port Out</li>
+              <li>Porting Fraud</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </template>
     <div class="guide-table-wrap" style="padding: 0;">
       <div id="fraud-guide-loader" class="loader" style="padding: 16px 20px;">Loading fraud troubleshooting guide...</div>
       <div id="fraud-guide-list" class="hidden"></div>
@@ -2697,6 +2772,16 @@
           '<span class="material-icons-round fr-chevron">expand_more</span></div>' +
           '<div class="fr-detail-wrap"><div class="fr-detail-inner">' + bodyHtml + '</div></div></div>';
       }).join('');
+
+      // Route the static Fraud Teams block into the sheet-driven "Fraud Routing" section's body —
+      // that section is already about ticket-close routing, so the team lookup lives there rather
+      // than higher up in the panel. Skips silently if the section doesn't exist in the sheet.
+      const routingRow = document.getElementById('fr-row-fraud-routing');
+      const tmpl = document.getElementById('fr-teams-block-template');
+      if (routingRow && tmpl) {
+        const inner = routingRow.querySelector('.fr-detail-inner');
+        if (inner) inner.appendChild(tmpl.content.cloneNode(true));
+      }
     }
 
     function toggleFrRow(safeId) {
