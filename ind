@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GE Dashboard</title>
   <base target="_top">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
     :root {
@@ -37,7 +37,11 @@
       --space-4: 16px;
       --space-5: 24px;
       --space-6: 32px;
-
+      /* Fraud Troubleshooting semantic colors — separate dark/light values since the plain
+         pastel text/icon tones read fine on a near-black surface but become nearly invisible
+         on light mode's near-white surface. Background tints (rgba, low alpha) stay theme-
+         agnostic since a faint colorwash reads fine on either; only foreground text/icons need
+         a theme-specific value, same reasoning as --neon-orange already darkening for light mode. */
       --fr-accent: #f87171;
       --fr-warning-text: #fde68a;
       --fr-warning-icon: #fbbf24;
@@ -45,14 +49,9 @@
       --fr-redirect-text: #bfdbfe;
       --fr-redirect-icon: #60a5fa;
       --fr-ext-link: #93c5fd;
-
+      /* Porting Issues has the same pastel-on-dark problem as Fraud did */
       --pi-accent: #fbbf24;
       --pi-danger-text: #fca5a5;
-      --cp-pink: #f472b6;
-      --cp-green: #4ade80;
-      --team-device: #a78bfa;
-      --team-retail: #38bdf8;
-      --team-usage: #4ade80;
     }
 
     [data-theme="light"] {
@@ -73,11 +72,6 @@
       --fr-ext-link: #1d4ed8;
       --pi-accent: #b45309;
       --pi-danger-text: #991b1b;
-      --cp-pink: #be185d;
-      --cp-green: #15803d;
-      --team-device: #6d28d9;
-      --team-retail: #0369a1;
-      --team-usage: #15803d;
     }
 
     * { box-sizing: border-box; }
@@ -106,7 +100,7 @@
     }
 
     .dashboard-container { display: flex; width: 100vw; height: 100vh; position: relative; }
-
+    
     .icon-rail { width: 60px; background: var(--bg-deep-gray); border-right: 1px solid var(--border-dark); display: flex; flex-direction: column; align-items: center; height: 100%; flex-shrink: 0; padding: 14px 0; gap: 4px; box-shadow: var(--shadow-sm); }
     .rail-brand { color: var(--neon-orange); font-size: 26px !important; margin-bottom: 10px; }
     .rail-icon-btn { width: 42px; height: 42px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; transition: var(--transition-smooth); flex-shrink: 0; }
@@ -189,7 +183,7 @@
       transition: transform 0.32s var(--ease-out-expo), opacity 0.22s ease, width 0.35s var(--ease-out-expo);
     }
     #calculator-modal-window.active { display: flex; }
-    #calculator-modal-window.history-open { width: 522px; }
+    #calculator-modal-window.history-open { width: 522px; } /* 300px calc-pane + 220px history-pane + 1px divider */
 
     .calc-pane { width: 300px; padding: 20px; flex-shrink: 0; }
     .calc-history-toggle { color: var(--text-muted); cursor: pointer; transition: var(--transition-smooth); border-radius: 6px; padding: 2px; }
@@ -211,6 +205,7 @@
     .calc-btn-eq { background: var(--neon-orange); color: var(--bg-deep-gray); border-color: var(--neon-orange); }
     .calc-btn-zero { grid-column: span 2; }
 
+    /* History pane — collapses to zero width so the modal smoothly resizes rather than jumping */
     .history-pane-outer { display:grid; grid-template-columns: 0fr; transition: grid-template-columns 0.35s var(--ease-out-expo); border-left: 0px solid var(--border-dark); }
     #calculator-modal-window.history-open .history-pane-outer { grid-template-columns: 1fr; border-left-width: 1px; }
     .history-pane { overflow:hidden; width: 220px; display:flex; flex-direction:column; }
@@ -331,16 +326,16 @@
     .slot-clear-icon { font-size: 16px !important; color: var(--text-muted); opacity: 0; transition: var(--transition-smooth); flex-shrink: 0; }
     .note-slot-row:hover .slot-clear-icon { opacity: 1; }
     .slot-clear-icon:hover { color: var(--danger); }
-
+    
     .sidebar-search { margin: 0 16px 8px 16px; padding: 6px 10px; background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: 6px; color: var(--text-white); font-size: 12px; outline: none; }
-
+    
     .scroll-list { list-style: none; margin: 0; padding: 0 8px; overflow-y: auto; flex: 1; }
     .list-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; transition: var(--transition-smooth); gap: 8px; }
     .list-item:hover { background: var(--input-bg); transform: translateX(2px); }
     .item-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
     .item-title { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-white); }
     .item-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
+    
     .kb-item { padding: 10px 12px; border-bottom: 1px solid var(--border-dark); font-size: 12.5px; line-height: 1.5; color: var(--text-white); }
     .kb-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .kb-sender { font-size: 11px; font-weight: 700; color: var(--neon-orange); }
@@ -452,37 +447,12 @@
     .rail-icon-btn.icon-fraud-guide:hover { color: var(--fr-accent); }
     .rail-icon-btn.icon-fraud-guide.active { color: var(--fr-accent); background: rgba(248,113,113,0.12); box-shadow: inset 0 0 0 1px rgba(248,113,113,0.28); }
 
+    /* Persistent intro block — always visible, not part of the accordion */
     .fr-intro { padding: 14px 20px; border-bottom: 1px solid var(--border-dark); background: rgba(248,113,113,0.04); flex-shrink: 0; }
     .fr-intro h4 { margin:0 0 8px 0; font-size:12px; font-weight:700; color:var(--fr-accent); text-transform:uppercase; letter-spacing:0.04em; display:flex; align-items:center; gap:6px; }
     .fr-intro h4 .material-icons-round { font-size:15px !important; }
 
-    /* Team routing card — flat 3-column lookup showing which Fraud team owns which issue types.
-       Rendered dynamically into the "Fraud Routing / Reconciliation" accordion row (its natural
-       home — that section is already about ticket-close routing). Grid stays side-by-side at all
-       panel widths since responsive stacking would push accordion content below the fold. */
-    .fr-teams-block { padding:14px 20px; border-bottom:1px solid var(--border-dark); background:rgba(96,165,250,0.03); flex-shrink:0; }
-    .fr-teams-block--inline { padding:0; border-bottom:none; background:transparent; margin-top:14px; padding-top:14px; border-top:1px solid var(--border-dark); }
-    .fr-teams-block--inline .fr-teams-header h4 { color:var(--fr-accent); }
-    .fr-teams-header { margin-bottom:10px; }
-    .fr-teams-header h4 { margin:0 0 3px 0; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-white); display:flex; align-items:center; gap:6px; }
-    .fr-teams-header h4 .material-icons-round { font-size:14px !important; color:var(--text-muted); }
-    .fr-teams-header .fr-teams-sub { font-size:11px; color:var(--text-muted); margin:0; }
-    .fr-teams-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
-    .fr-team-card { background:var(--input-bg); border:1px solid var(--border-dark); border-radius:var(--radius-md); padding:10px 11px; border-top-width:3px; display:flex; flex-direction:column; min-width:0; }
-    .fr-team-card.device { border-top-color:var(--team-device); }
-    .fr-team-card.retail { border-top-color:var(--team-retail); }
-    .fr-team-card.usage  { border-top-color:var(--team-usage); }
-    .fr-team-name { font-size:12px; font-weight:700; color:var(--text-white); margin-bottom:8px; display:flex; align-items:center; gap:5px; line-height:1.2; }
-    .fr-team-name .material-icons-round { font-size:14px !important; flex-shrink:0; }
-    .fr-team-card.device .fr-team-name .material-icons-round { color:var(--team-device); }
-    .fr-team-card.retail .fr-team-name .material-icons-round { color:var(--team-retail); }
-    .fr-team-card.usage  .fr-team-name .material-icons-round { color:var(--team-usage); }
-    .fr-team-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; }
-    .fr-team-list li { font-size:11px; line-height:1.4; color:var(--text-white); padding-left:11px; position:relative; }
-    .fr-team-list li::before { content:''; position:absolute; left:0; top:6px; width:4px; height:4px; border-radius:50%; background:var(--text-muted); }
-    .fr-team-list li .fr-inline-hint { display:block; margin-top:2px; font-size:10px; color:var(--text-muted); font-style:italic; line-height:1.45; }
-    .fr-team-list li .fr-inline-hint::before { content:'→ '; font-style:normal; color:var(--text-muted); }
-
+    /* Callout boxes */
     .fr-callout { display:flex; gap:8px; align-items:flex-start; background: rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.25); border-radius:6px; padding:9px 12px; margin: 8px 0; font-size:12px; line-height:1.5; color: var(--fr-warning-text); }
     .fr-callout .material-icons-round { font-size:15px !important; color:var(--fr-warning-icon); flex-shrink:0; margin-top:1px; }
     .fr-callout.fr-callout-danger { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.28); color:var(--fr-danger-text); }
@@ -490,6 +460,7 @@
     .fr-callout.fr-callout-redirect { background: rgba(96,165,250,0.08); border-color: rgba(96,165,250,0.28); color:var(--fr-redirect-text); }
     .fr-callout.fr-callout-redirect .material-icons-round { color:var(--fr-redirect-icon); }
 
+    /* Nested procedural lists — raw HTML from the sheet, so target bare ol/li/p/a */
     .fr-detail-inner ol, #fraud-guide-intro ol { margin: 6px 0 0 0; padding-left: 20px; font-size:12.5px; line-height:1.6; color: var(--text-white); }
     .fr-detail-inner p, #fraud-guide-intro p { font-size:12px; margin: 2px 0 8px 0; }
     .fr-detail-inner li, #fraud-guide-intro li { margin-bottom: 6px; }
@@ -499,6 +470,7 @@
     .fr-detail-inner a.fr-ext-link, #fraud-guide-intro a.fr-ext-link { color:var(--fr-ext-link); text-decoration:none; border-bottom:1px dashed rgba(147,197,253,0.4); }
     .fr-detail-inner a.fr-ext-link:hover, #fraud-guide-intro a.fr-ext-link:hover { border-bottom-style:solid; }
 
+    /* Escalation ticket-field block (same visual pattern as Porting Issues) */
     .fr-escalate-block { margin: 8px 0; border:1px solid rgba(239,68,68,0.3); background:rgba(239,68,68,0.06); border-radius:6px; padding:10px 12px; }
     .fr-escalate-title { font-size:11px; font-weight:700; color:var(--fr-danger-text); display:flex; align-items:center; gap:5px; margin-bottom:8px; }
     .fr-escalate-title .material-icons-round { font-size:14px !important; }
@@ -506,6 +478,7 @@
     .fr-chip { font-size:10.5px; background:var(--bg-deep-gray); border:1px solid var(--border-dark); border-radius:5px; padding:4px 8px; color:var(--text-muted); }
     .fr-chip b { color:var(--text-white); font-weight:600; }
 
+    /* Copyable private-note templates */
     .fr-copy-block { margin:8px 0; background:var(--input-bg); border:1px solid var(--border-dark); border-radius:6px; padding:10px 12px; }
     .fr-copy-block .fr-copy-label { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
     .fr-copy-block pre { margin:0; font-family:'Inter',sans-serif; font-size:12px; color:var(--text-white); white-space:pre-wrap; line-height:1.7; }
@@ -513,11 +486,13 @@
     .fr-mini-copy:hover { color:var(--fr-accent); border-color:var(--fr-accent); }
     .fr-mini-copy .material-icons-round { font-size:12px !important; }
 
+    /* Sub-sections for mutually exclusive paths within one section (e.g. Blacklist / Whitelist) */
     .fr-subsection { border:1px solid var(--border-dark); border-radius:8px; padding:12px 14px; margin-bottom:10px; }
     .fr-subsection:last-child { margin-bottom:0; }
     .fr-subsection-title { font-size:12.5px; font-weight:700; color:var(--text-white); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
     .fr-subsection-title .material-icons-round { font-size:15px !important; color:var(--fr-accent); }
 
+    /* Accordion rows for the fraud issue categories */
     .fr-row { border-bottom: 1px solid var(--border-dark); }
     .fr-row-head { display:flex; align-items:center; gap:12px; padding:13px 20px; cursor:pointer; transition:var(--transition-smooth); }
     .fr-row-head:hover { background: rgba(255,255,255,0.02); }
@@ -530,10 +505,11 @@
     .fr-row.expanded .fr-detail-wrap { grid-template-rows:1fr; }
     .fr-detail-inner { overflow:hidden; }
     .fr-row.expanded .fr-detail-inner { padding:2px 20px 18px 20px; }
-
+    
+    
     .delete-note-icon { color: var(--text-muted); cursor: pointer; padding: 2px; border-radius: 4px; transition: var(--transition-smooth); }
     .delete-note-icon:hover { color: #ff4444; background: rgba(255,68,68,0.1); }
-
+    
     .resizer-v { width: 9px; cursor: col-resize; background: transparent; transition: background 0.2s; flex-shrink: 0; z-index: 10; display: flex; align-items: center; justify-content: center; }
     .resizer-v:hover, .resizer-v.active-dragging { background: rgba(248,144,31,0.08); }
     .resizer-v .grip { display: flex; flex-direction: column; gap: 3px; }
@@ -545,10 +521,10 @@
     .resizer-h .grip { display: flex; gap: 3px; }
     .resizer-h .grip span { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); transition: background 0.2s; }
     .resizer-h:hover .grip span, .resizer-h.active-dragging .grip span { background: var(--neon-orange); }
-
+    
     .workspace-center { flex: 1; display: flex; flex-direction: row; height: 100%; min-width: 0; background-color: var(--bg-main); }
     .workspace-main-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; }
-
+    
     .toolbar { height: 48px; background: var(--bg-deep-gray); border-bottom: 1px solid var(--border-dark); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; }
     .toolbar-group { display: flex; align-items: center; gap: 12px; }
     .toolbar-icon { color: var(--text-muted); cursor: pointer; font-size: 22px !important; padding: 6px; border-radius: 6px; transition: var(--transition-smooth); }
@@ -563,7 +539,7 @@
     .toolbar-icon.icon-fact-check { color: #fb7185; }
     .toolbar-icon.icon-settings-gear { color: #94a3b8; }
     .toolbar-divider { width: 1px; height: 20px; background: var(--border-dark); margin: 0 4px; }
-
+    
     .btn { background: var(--neon-orange); color: #121214; border: none; padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 1px 0 rgba(0,0,0,0.1); }
     .btn:hover { opacity: 0.94; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(248,144,31,0.22); }
     .btn:active { transform: translateY(0) scale(0.98); box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
@@ -573,16 +549,16 @@
     .btn-action-text { background: transparent; border: none; color: var(--text-white); display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: var(--transition-smooth); }
     .btn-action-text:hover { background: var(--input-bg); color: var(--neon-orange); }
     .btn-action-text:active, .rail-icon-btn:active, .toolbar-icon:active, .copy-icon-btn:active { transform: scale(0.94); }
-
+    
     .select-theme { background: var(--input-bg); border: 1px solid var(--border-dark); color: var(--text-white); border-radius: 6px; outline: none; cursor: pointer; }
-
+    
     .preset-bar { background: var(--bg-deep-gray); border-bottom: 1px solid var(--border-dark); padding: 8px 16px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
     .preset-row { display: flex; align-items: center; gap: 14px; overflow-x: auto; white-space: nowrap; }
     .preset-bar-header-label { display: block; width: 100%; margin: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--neon-orange); letter-spacing: 0.05em; }
     .preset-group-unit { display: flex; align-items: center; gap: 6px; }
     .preset-inner-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
     .select-preset { background: var(--input-bg); border: 1px solid var(--border-dark); color: var(--text-white); padding: 4px 8px; font-size: 12px; border-radius: 6px; outline: none; max-width: 150px; }
-
+    
     .editor-stack-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 12px; gap: 8px; min-height: 0; }
     .card { background: var(--bg-deep-gray); border: 1px solid var(--border-dark); border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; transition: box-shadow 0.25s var(--ease-out-expo), border-color 0.25s ease; }
     .card:focus-within { border-color: rgba(248,144,31,0.35); box-shadow: var(--shadow-md), 0 0 0 1px rgba(248,144,31,0.12); }
@@ -605,35 +581,39 @@
     .note-tab .tab-clear-x { font-size: 14px !important; color: var(--text-muted); opacity:0; margin-left:2px; flex-shrink:0; }
     .note-tab:hover .tab-clear-x { opacity: 1; }
     .note-tab .tab-clear-x:hover { color: var(--danger); }
-
+    
     .canvas-meta { padding: 8px 12px; background: rgba(0,0,0,0.15); border-bottom: 1px solid var(--border-dark); display: flex; justify-content: space-between; align-items: center; }
     .btn-copy { padding: 4px 10px; font-size: 11px; font-weight: 600; text-transform: none; }
-
+    
     .editor-container { flex: 1; position: relative; padding: 4px; overflow: hidden; }
-
+    
     .editor-area { width: 100%; height: 100%; background: transparent; border: none; outline: none; color: var(--text-white); font-family: inherit; font-size: 13.5px; line-height: 1.65; letter-spacing: 0; padding: 10px; box-sizing: border-box; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
     .editor-area img { max-width: 100%; max-height: 280px; border-radius: 6px; margin: 6px 0; display: block; border: 1px solid var(--border-dark); }
-
+    
     .quick-resp-footer { width: var(--footer-height); background: var(--bg-deep-gray); border-left: 1px solid var(--border-dark); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; height: 100%; }
     .qr-main-column { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
     .qr-add-macro-row { padding: 10px 12px; flex-shrink: 0; border-bottom: 1px solid var(--border-dark); }
 
+    /* Draggable divider between Filters/Folders and the Quick Response list. Same grip-dot
+       language as .resizer-h/.resizer-v, but keeps the center-line-that-breaks-around-the-dots
+       treatment since this one sits entirely within one consistently-colored panel (unlike the
+       app-wide resizers, which can sit between two differently-colored areas). */
     .qr-split-resizer { height: 9px; cursor: row-resize; background: transparent; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; transition: background 0.2s; }
     .qr-split-resizer:hover, .qr-split-resizer.active-dragging { background: rgba(248,144,31,0.08); }
     .qr-split-resizer::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--border-dark); transform: translateY(-50%); }
     .qr-split-resizer .grip { position: relative; z-index: 1; display: flex; gap: 3px; background: var(--bg-deep-gray); padding: 0 8px; }
     .qr-split-resizer .grip span { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); transition: background 0.2s; }
     .qr-split-resizer:hover .grip span, .qr-split-resizer.active-dragging .grip span { background: var(--neon-orange); }
-
+    
     .modal-overlay { position: fixed; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.5); display:none; z-index:100; opacity:0; transition: opacity 0.25s ease, backdrop-filter 0.25s ease; }
     .modal-overlay.active { display: block; opacity: 1; }
-
+    
     .sig-modal-window { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95) translateY(6px); background: var(--bg-deep-gray); border: 1px solid var(--modal-border); border-radius: 12px; padding: 20px; width: 420px; z-index: 105; display: none; opacity: 0; transition: transform 0.32s var(--ease-out-expo), opacity 0.22s ease; }
     .sig-modal-window.active { display: flex; flex-direction: column; transform: translate(-50%, -50%) scale(1) translateY(0); opacity: 1; }
-
+    
     .sig-textarea { width: 100%; height: 120px; background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: 8px; color: var(--text-white); padding: 10px; font-size: 13px; resize: none; outline: none; }
     .sig-btn-save { background: var(--neon-orange); color: #121214; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-
+    
     input[type="text"], input[type="password"], textarea.preset-textarea { width: 100%; padding: 10px 14px; background-color: var(--input-bg); border: 1px solid var(--border-dark); color: var(--text-white); border-radius: 8px; outline: none; margin-bottom: 12px; box-sizing: border-box; transition: var(--transition-smooth); }
 
     /* ============ Utility ============ */
@@ -719,13 +699,16 @@
 
     .qr-deck-card { background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition-smooth); overflow: hidden; }
     .qr-deck-card:hover { border-color: var(--neon-orange); box-shadow: var(--shadow-sm); }
-    .qr-deck-body { font-size: 11px; color: var(--text-muted); line-height: 1.45; padding: 0 10px 10px 10px; white-space: pre-wrap; }
+    .qr-deck-body { font-size: 11px; color: var(--text-muted); line-height: 1.45; padding: 0 10px 10px 10px; }
     .qr-deck-card-head { display: flex; align-items: center; gap: 6px; padding: 9px 10px; }
     .qr-action-icon { font-size: 15px !important; color: var(--text-muted); cursor: pointer; opacity: 0; transition: var(--transition-smooth); flex-shrink: 0; }
     .qr-deck-card:hover .qr-action-icon { opacity: 1; }
     .qr-action-icon:hover { color: var(--neon-orange); }
     .qr-action-icon.active { opacity: 1; color: var(--neon-orange); }
 
+    /* Hover-to-preview: collapsed to zero height by default, expands to reveal the full macro
+       text on hover so the list stays title-only/compact without losing the ability to check
+       content before inserting it. */
     .qr-preview-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.22s var(--ease-out-expo); }
     .qr-preview-inner { overflow: hidden; }
     .qr-deck-card:hover .qr-preview-wrap { grid-template-rows: 1fr; }
@@ -742,68 +725,18 @@
     }
     .ge-toast.show { opacity: 1; transform: translateY(0) scale(1); }
     .ge-toast.success { border-left-color: var(--success); }
-    .ge-toast-undo-btn { background: transparent; border: 1px solid var(--border-dark); color: var(--neon-orange); font-family: inherit; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth); flex-shrink: 0; pointer-events: auto; }
-    .ge-toast-undo-btn:hover { border-color: var(--neon-orange); background: rgba(248,144,31,0.1); }
-
-    /* ============ Command Palette ============ */
-    .cp-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 180; }
-    .cp-backdrop.open { opacity: 1; pointer-events: auto; }
-    .cp-panel {
-      position: fixed; top: 14vh; left: 50%; transform: translateX(-50%) scale(0.97) translateY(6px);
-      width: 640px; max-width: 92vw; max-height: 66vh;
-      background: var(--bg-deep-gray); border: 1px solid var(--modal-border); border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden;
-      opacity: 0; pointer-events: none; transition: transform 0.28s var(--ease-out-expo), opacity 0.18s ease; z-index: 181;
-    }
-    .cp-panel.open { opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1) translateY(0); }
-    .cp-search-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border-dark); flex-shrink: 0; }
-    .cp-search-row .material-icons-round { font-size: 19px !important; color: var(--text-muted); }
-    #cp-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-white); font-size: 15px; font-family: inherit; }
-    #cp-input::placeholder { color: var(--text-muted); }
-    .cp-esc-hint { font-size: 10px; color: var(--text-muted); background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: 4px; padding: 2px 6px; font-weight: 600; }
-    .cp-results { flex: 1; overflow-y: auto; padding: 6px 8px 8px 8px; }
-    .cp-group-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 10px 10px 4px 10px; }
-    .cp-item { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: var(--radius-md); cursor: pointer; }
-    .cp-item.selected { background: var(--input-bg); }
-    .cp-item.selected .cp-action-hint { opacity: 1; }
-    .cp-icon { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255,255,255,0.04); border: 1px solid var(--border-dark); }
-    .cp-icon .material-icons-round { font-size: 16px !important; }
-    .cp-item-main { flex: 1; min-width: 0; }
-    .cp-item-title { font-size: 13px; font-weight: 600; color: var(--text-white); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .cp-item-title mark { background: transparent; color: var(--neon-orange); font-weight: 700; }
-    .cp-item-sub { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 1px; }
-    .cp-item-sub mark { background: transparent; color: var(--neon-orange); font-weight: 700; }
-    .cp-badge { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 4px; padding: 2px 6px; flex-shrink: 0; }
-    .cp-badge.tool    { color: var(--neon-orange); background: rgba(248,144,31,0.10); border: 1px solid rgba(248,144,31,0.25); }
-    .cp-badge.macro   { color: var(--cp-green);   background: rgba(74,222,128,0.10);  border: 1px solid rgba(74,222,128,0.25); }
-    .cp-badge.carrier { color: var(--cp-pink);    background: rgba(244,114,182,0.10); border: 1px solid rgba(244,114,182,0.25); }
-    .cp-badge.porting { color: var(--pi-accent);  background: rgba(251,191,36,0.10);  border: 1px solid rgba(251,191,36,0.25); }
-    .cp-badge.fraud   { color: var(--fr-accent);  background: rgba(248,113,113,0.10); border: 1px solid rgba(248,113,113,0.25); }
-    .cp-icon.tool { color: var(--neon-orange); } .cp-icon.macro { color: var(--cp-green); } .cp-icon.carrier { color: var(--cp-pink); } .cp-icon.porting { color: var(--pi-accent); } .cp-icon.fraud { color: var(--fr-accent); }
-    .cp-action-hint { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); opacity: 0; flex-shrink: 0; }
-    .cp-kbd { background: var(--input-bg); border: 1px solid var(--border-dark); border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 600; color: var(--text-white); }
-    .cp-empty { padding: 28px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; }
-    .cp-footer { display: flex; align-items: center; gap: 14px; padding: 9px 16px; border-top: 1px solid var(--border-dark); flex-shrink: 0; font-size: 10.5px; color: var(--text-muted); }
-    .cp-footer .f-item { display: flex; align-items: center; gap: 5px; }
-    .rail-icon-btn.icon-cmd-search { background: rgba(248,144,31,0.10); box-shadow: inset 0 0 0 1px rgba(248,144,31,0.22); color: var(--neon-orange); }
-    .rail-icon-btn.icon-cmd-search:hover { background: rgba(248,144,31,0.16); color: var(--neon-orange); }
     .ge-toast.error { border-left-color: var(--danger); }
     .ge-toast .material-icons-round { font-size: 18px !important; flex-shrink: 0; }
     .ge-toast.success .material-icons-round { color: var(--success); }
     .ge-toast.error .material-icons-round { color: var(--danger); }
     .ge-toast:not(.success):not(.error) .material-icons-round { color: var(--neon-orange); }
-</style>
+  </style>
 </head>
 <body>
 
   <div class="dashboard-container" id="app-root-container">
     <div class="icon-rail">
       <span class="material-icons-round rail-brand" title="GE Dashboard">all_inclusive</span>
-
-      <div class="rail-icon-btn icon-cmd-search" onclick="openCommandPalette()" title="Search everything (Ctrl+K)">
-        <span class="material-icons-round">search</span>
-      </div>
-      <div class="rail-divider"></div>
 
       <div class="rail-icon-btn" id="rail-quicklinks-btn" onclick="toggleQuickLinksFlyout(event)" title="Quick Links">
         <span class="material-icons-round">link</span>
@@ -979,23 +912,6 @@
 
   <div id="modal-backdrop-node" class="modal-overlay" onclick="closeAllModals()"></div>
 
-  <div class="cp-backdrop" id="cp-backdrop" onclick="closeCommandPalette()"></div>
-  <div class="cp-panel" id="cp-panel">
-    <div class="cp-search-row">
-      <span class="material-icons-round">search</span>
-      <input id="cp-input" type="text" placeholder="Search macros, carriers, error codes, guides, tools..." autocomplete="off" oninput="renderPaletteResults(this.value)">
-      <span class="cp-esc-hint">ESC</span>
-    </div>
-    <div class="cp-results" id="cp-results"></div>
-    <div class="cp-footer">
-      <span class="f-item"><span class="cp-kbd">↑</span><span class="cp-kbd">↓</span> navigate</span>
-      <span class="f-item"><span class="cp-kbd">↵</span> select</span>
-      <span class="f-item"><span class="cp-kbd">esc</span> close</span>
-      <span style="flex:1"></span>
-      <span class="f-item" id="cp-count"></span>
-    </div>
-  </div>
-
   <div id="toast-stack" aria-live="polite"></div>
 
   <div id="call-trending-modal-window" class="custom-modal-window">
@@ -1132,48 +1048,6 @@
     </div>
     <div class="stale-note"><span class="material-icons-round">info</span>Loaded when the app started — refresh the page to pull the latest list.</div>
     <div id="fraud-guide-intro" style="display:none;"></div>
-    <template id="fr-teams-block-template">
-      <div class="fr-teams-block fr-teams-block--inline">
-        <div class="fr-teams-header">
-          <h4><span class="material-icons-round">groups</span>Fraud Teams</h4>
-          <p class="fr-teams-sub">Use the information below to determine which Fraud team handles the issue the customer is experiencing</p>
-        </div>
-        <div class="fr-teams-grid">
-          <div class="fr-team-card device">
-            <div class="fr-team-name"><span class="material-icons-round">phonelink</span>Device Fraud Investigations</div>
-            <ul class="fr-team-list">
-              <li>Customer claims device was "Hacked"</li>
-              <li>Unauthorized Device/SIM Change</li>
-              <li>Customer received an SMS or Email regarding unauthorized account activity/access</li>
-              <li>Unable to access customers account due to lock</li>
-              <li>Unauthorized Changes to account</li>
-              <li>Unauthorized Line Added (Added via Web, App or Agent)</li>
-              <li>Unauthorized Add-On</li>
-              <li>Unauthorized Base Plan Change</li>
-              <li>Domestic Dispute
-                <span class="fr-inline-hint">In situations involving family members, partners, etc. Inform the customer about splitting 1 or more phone numbers off of this account, and assist them if this is the request.</span>
-              </li>
-            </ul>
-          </div>
-          <div class="fr-team-card retail">
-            <div class="fr-team-name"><span class="material-icons-round">storefront</span>Retail Fraud</div>
-            <ul class="fr-team-list">
-              <li>In-Store Transactions</li>
-              <li>Upset over plan change, misinformation, or device purchase at a store location</li>
-              <li>Any Fraud issue where a customer suspects a Retailer is at fault</li>
-            </ul>
-          </div>
-          <div class="fr-team-card usage">
-            <div class="fr-team-name"><span class="material-icons-round">signal_cellular_alt</span>Usage Fraud</div>
-            <ul class="fr-team-list">
-              <li>Disputing an account suspension (Line Restriction)</li>
-              <li>Unauthorized Port Out</li>
-              <li>Porting Fraud</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </template>
     <div class="guide-table-wrap" style="padding: 0;">
       <div id="fraud-guide-loader" class="loader" style="padding: 16px 20px;">Loading fraud troubleshooting guide...</div>
       <div id="fraud-guide-list" class="hidden"></div>
@@ -1519,275 +1393,15 @@
       }, 3200);
     }
 
-    // Delete-then-undo pattern: destructive actions happen immediately (no confirm dialog),
-    // with a short window to reverse them. Faster for intentional deletes, safer for mistakes.
-    function showUndoToast(message, onUndo) {
-      const stack = document.getElementById('toast-stack');
-      if (!stack) { return; }
-      const toast = document.createElement('div');
-      toast.className = 'ge-toast';
-      toast.innerHTML = `<span class="material-icons-round">delete_outline</span><span style="flex:1;">${message}</span>`;
-      const undoBtn = document.createElement('button');
-      undoBtn.className = 'ge-toast-undo-btn';
-      undoBtn.textContent = 'Undo';
-      toast.appendChild(undoBtn);
-      stack.appendChild(toast);
-      requestAnimationFrame(() => toast.classList.add('show'));
-
-      let done = false;
-      const dismiss = () => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 200);
-      };
-      undoBtn.addEventListener('click', () => {
-        if (done) return;
-        done = true;
-        clearTimeout(timer);
-        dismiss();
-        onUndo();
-      });
-      const timer = setTimeout(() => { done = true; dismiss(); }, 5000);
-    }
-
     /* ============ google.script.run -> Promise helper ============ */
-    // Promise wrapper for google.script.run — used by async/await flows (vault, signatures, presets, links).
     function gsRun(fnName, ...args) {
       return new Promise((resolve, reject) => {
         google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fnName](...args);
       });
     }
 
-    /* ============ Command Palette ============ */
-    // Searches only data the startup bundle already cached — the index is rebuilt on every
-    // open (cheap: a few hundred items) so it always reflects current macros/guides.
-    const PALETTE_TOOLS = [
-      { icon: 'calculate',      title: 'Calculator',            sub: 'Open the calculator with history',        run: () => openCalculatorModal() },
-      { icon: 'lock',           title: 'Credential Vault',      sub: 'Unlock your encrypted vault',             run: () => openVaultModal() },
-      { icon: 'trending_up',    title: 'Call Trending',         sub: 'Log a trend for this call',               run: () => openCallTrendingModal() },
-      { icon: 'gavel',          title: 'Escalation Guide',      sub: 'CSIT categories & priorities',            run: () => openEscalationGuideModal() },
-      { icon: 'call',           title: 'Carrier Phonebook',     sub: 'Porting numbers, PINs, hours',            run: () => openCarrierPhonebookModal() },
-      { icon: 'travel_explore', title: 'Porting Issues',        sub: 'Troubleshooting reference',               run: () => openPortingIssuesModal() },
-      { icon: 'gpp_maybe',      title: 'Fraud Troubleshooting', sub: 'Account takeover procedures',             run: () => openFraudGuideModal() },
-      { icon: 'campaign',       title: 'Updates Feed',          sub: 'Latest team announcements',               run: () => openUpdatesFeedModal() },
-      { icon: 'checklist',      title: 'QA Checklist',          sub: 'Call quality checklist',                  run: () => openQAChecklistModal() },
-      { icon: 'chat_bubble',    title: 'Send Feedback',         sub: 'Report a bug or suggest a feature',       run: () => openFeedbackModal() }
-    ];
-
-    let paletteOpen = false;
-    let paletteItems = [];
-    let paletteResults = [];
-    let paletteSelectedIndex = 0;
-
-    function stripHtmlForSearch(html) {
-      return (html || '').replace(/<[^>]*>/g, ' ');
-    }
-
-    function buildPaletteIndex() {
-      const items = [];
-
-      PALETTE_TOOLS.forEach(t => items.push({ cat: 'tool', icon: t.icon, title: t.title, sub: t.sub, keywords: '', run: t.run }));
-
-      quickResponsesList.forEach(qr => {
-        const title = qr.title ? qr.title : (qr.text.split('-')[0] || qr.text).trim();
-        items.push({
-          cat: 'macro', icon: 'bolt', title: title,
-          sub: qr.text.length > 90 ? qr.text.slice(0, 90) + '…' : qr.text,
-          keywords: (qr.text + ' ' + (qr.category || '')).toLowerCase(),
-          run: () => navigator.clipboard.writeText(qr.text).then(() => showToast('Copied to clipboard', 'success'))
-        });
-      });
-
-      carrierPhonebookData.forEach((row, idx) => {
-        const subParts = [];
-        if (row.npcPhone) subParts.push('NPC ' + row.npcPhone);
-        if (row.hours) subParts.push(row.hours);
-        items.push({
-          cat: 'carrier', icon: 'call', title: row.carrier,
-          sub: subParts.join(' · '),
-          keywords: ((row.npcPhone || '') + ' ' + (row.carePhone || '') + ' ' + (row.portPin || '')).toLowerCase(),
-          run: () => jumpToCarrierFromPalette(idx)
-        });
-      });
-
-      portingIssuesData.forEach(cat => {
-        items.push({
-          cat: 'porting', icon: 'travel_explore', title: cat.title,
-          sub: cat.errorCode || (cat.steps[0] ? cat.steps[0].text.slice(0, 90) : ''),
-          keywords: ((cat.errorCode || '') + ' ' + cat.steps.map(s => s.text + ' ' + (s.template || '')).join(' ')).toLowerCase().slice(0, 2000),
-          run: () => jumpToPortingFromPalette(cat.id)
-        });
-      });
-
-      fraudGuideData.filter(s => !s.persistent).forEach(section => {
-        const blockText = section.subsections.map(sub =>
-          (sub.title + ' ' + sub.blocks.map(b => stripHtmlForSearch(b.content)).join(' '))
-        ).join(' ');
-        items.push({
-          cat: 'fraud', icon: 'gpp_maybe', title: section.title,
-          sub: section.subtitle || '',
-          keywords: blockText.toLowerCase().slice(0, 2000),
-          run: () => jumpToFraudFromPalette(section.id)
-        });
-      });
-
-      return items;
-    }
-
-    function openCommandPalette() {
-      paletteItems = buildPaletteIndex();
-      paletteOpen = true;
-      document.getElementById('cp-backdrop').classList.add('open');
-      document.getElementById('cp-panel').classList.add('open');
-      const input = document.getElementById('cp-input');
-      input.value = '';
-      renderPaletteResults('');
-      setTimeout(() => input.focus(), 50);
-    }
-
-    function closeCommandPalette() {
-      paletteOpen = false;
-      document.getElementById('cp-backdrop').classList.remove('open');
-      document.getElementById('cp-panel').classList.remove('open');
-    }
-
-    function cpHighlight(text, query) {
-      if (!query) return escapeHtml(text);
-      const idx = text.toLowerCase().indexOf(query.toLowerCase());
-      if (idx === -1) return escapeHtml(text);
-      return escapeHtml(text.slice(0, idx)) + '<mark>' + escapeHtml(text.slice(idx, idx + query.length)) + '</mark>' + escapeHtml(text.slice(idx + query.length));
-    }
-
-    function scorePaletteItem(item, q) {
-      const t = item.title.toLowerCase(), s = (item.sub || '').toLowerCase();
-      if (t.startsWith(q)) return 0;
-      if (t.includes(q)) return 1;
-      if (s.includes(q) || item.keywords.includes(q)) return 2;
-      return -1;
-    }
-
-    function renderPaletteResults(rawQuery) {
-      const q = rawQuery.trim().toLowerCase();
-      const resultsEl = document.getElementById('cp-results');
-      const countEl = document.getElementById('cp-count');
-      const CAT_META = {
-        tool: { label: 'Tools & Panels', action: 'Open' },
-        macro: { label: 'Quick Responses', action: 'Copy' },
-        carrier: { label: 'Carriers', action: 'Open' },
-        porting: { label: 'Porting Issues', action: 'Open' },
-        fraud: { label: 'Fraud Guide', action: 'Open' }
-      };
-
-      let matched;
-      if (!q) {
-        const suggestedTools = paletteItems.filter(i => i.cat === 'tool').slice(0, 4);
-        const favs = quickResponsesList.filter(m => m.favorite).slice(0, 3).map(m => {
-          const title = m.title ? m.title : (m.text.split('-')[0] || m.text).trim();
-          return paletteItems.find(i => i.cat === 'macro' && i.title === title);
-        }).filter(Boolean);
-        matched = suggestedTools.concat(favs);
-      } else {
-        matched = paletteItems.map(i => ({ i, score: scorePaletteItem(i, q) }))
-          .filter(x => x.score >= 0)
-          .sort((a, b) => a.score - b.score)
-          .map(x => x.i);
-      }
-
-      paletteResults = [];
-      paletteSelectedIndex = 0;
-
-      if (!matched.length) {
-        resultsEl.innerHTML = '<div class="cp-empty">No matches for "' + escapeHtml(rawQuery) + '"</div>';
-        countEl.textContent = '';
-        return;
-      }
-
-      const groups = {};
-      matched.forEach(item => { (groups[item.cat] = groups[item.cat] || []).push(item); });
-
-      let html = '';
-      let flatIdx = 0;
-      const catOrder = ['tool', 'macro', 'carrier', 'porting', 'fraud'].filter(c => groups[c]);
-      catOrder.forEach(cat => {
-        html += '<div class="cp-group-label">' + (q ? CAT_META[cat].label : 'Suggested') + '</div>';
-        groups[cat].forEach(item => {
-          paletteResults.push(item);
-          html += `
-            <div class="cp-item${flatIdx === 0 ? ' selected' : ''}" data-idx="${flatIdx}" onmouseenter="setPaletteSelected(${flatIdx})" onclick="executePaletteSelection()">
-              <div class="cp-icon ${item.cat}"><span class="material-icons-round">${item.icon}</span></div>
-              <div class="cp-item-main">
-                <div class="cp-item-title">${cpHighlight(item.title, q)}</div>
-                <div class="cp-item-sub">${cpHighlight(item.sub || '', q)}</div>
-              </div>
-              <span class="cp-badge ${item.cat}">${CAT_META[item.cat].label.split(' ')[0]}</span>
-              <span class="cp-action-hint"><span class="cp-kbd">↵</span> ${CAT_META[item.cat].action}</span>
-            </div>`;
-          flatIdx++;
-        });
-      });
-
-      resultsEl.innerHTML = html;
-      countEl.textContent = paletteResults.length + ' result' + (paletteResults.length === 1 ? '' : 's');
-    }
-
-    function setPaletteSelected(idx) {
-      paletteSelectedIndex = idx;
-      const resultsEl = document.getElementById('cp-results');
-      resultsEl.querySelectorAll('.cp-item').forEach(el => el.classList.toggle('selected', Number(el.dataset.idx) === idx));
-      const el = resultsEl.querySelector(`.cp-item[data-idx="${idx}"]`);
-      if (el) el.scrollIntoView({ block: 'nearest' });
-    }
-
-    function executePaletteSelection() {
-      const item = paletteResults[paletteSelectedIndex];
-      if (!item) return;
-      closeCommandPalette();
-      item.run();
-    }
-
-    function jumpToCarrierFromPalette(dataIdx) {
-      openCarrierPhonebookModal();
-      const search = document.getElementById('carrier-phonebook-search');
-      if (search) { search.value = ''; }
-      renderCarrierPhonebook(carrierPhonebookData);
-      setTimeout(() => {
-        const row = document.getElementById('carrier-row-' + dataIdx);
-        if (!row) return;
-        row.classList.add('expanded');
-        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        row.style.boxShadow = 'inset 0 0 0 1px var(--cp-pink)';
-        setTimeout(() => { row.style.boxShadow = ''; }, 900);
-      }, 100);
-    }
-
-    function jumpToPortingFromPalette(categoryId) {
-      openPortingIssuesModal();
-      const search = document.getElementById('porting-issues-search');
-      if (search) { search.value = ''; filterPortingIssues(); }
-      setTimeout(() => jumpToPortingCategory(sanitizePiId(categoryId)), 100);
-    }
-
-    function jumpToFraudFromPalette(sectionId) {
-      openFraudGuideModal();
-      const search = document.getElementById('fraud-guide-search');
-      if (search) { search.value = ''; filterFraudGuide(); }
-      setTimeout(() => jumpToFrSection(sanitizeFrId(sectionId)), 100);
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        paletteOpen ? closeCommandPalette() : openCommandPalette();
-        return;
-      }
-      if (!paletteOpen) return;
-      if (e.key === 'Escape') { e.stopPropagation(); closeCommandPalette(); return; }
-      if (e.key === 'ArrowDown') { e.preventDefault(); setPaletteSelected(Math.min(paletteSelectedIndex + 1, paletteResults.length - 1)); }
-      if (e.key === 'ArrowUp')   { e.preventDefault(); setPaletteSelected(Math.max(paletteSelectedIndex - 1, 0)); }
-      if (e.key === 'Enter')     { e.preventDefault(); executePaletteSelection(); }
-    });
-
     /* ============ Vault encryption (Web Crypto: PBKDF2 + AES-GCM) ============ */
-    let vaultCryptoKey = null;
+    let vaultCryptoKey = null; // lives only in memory for this tab session; never persisted
 
     async function deriveVaultKey(password, saltB64) {
       const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
@@ -1817,6 +1431,7 @@
       return new TextDecoder().decode(plainBuf);
     }
 
+    // Legacy scheme (base64 + character shift) kept only to migrate older vaults on first unlock.
     function legacyDecrypt(str) {
       const LEGACY_SHIFT_OFFSET = 7;
       const unshifted = str.split('').map(c => String.fromCharCode(c.charCodeAt(0) - LEGACY_SHIFT_OFFSET)).join('');
@@ -1833,7 +1448,7 @@
     let threadrequestsPresets = [];
     let activeTemplateSegments = [];
     const TEMPLATE_TOKEN_REGEX = /\{\{([^:{}]+):(number|date|text)\}\}/g;
-
+    
     let quickResponsesList = [];
     let appFoldersList = ["Welcome", "Wait", "End"];
     let activeQRFilterCategory = "all";
@@ -1850,16 +1465,18 @@
     window.onload = function() {
       initThemePreference();
       initPresetConfigurations();
-
-      fetchStartupBundle();
-      fetchUserNotes();
+      
+      fetchSystemPresetsAndNotes();
       initFoldersMatrixAndLoadMacros();
       initQuickLinks();
 
       fetchUpdatesFeedData();
       setInterval(function() { fetchUpdatesFeedData(); }, 300000);
+      fetchCarrierPhonebook();
+      fetchPortingIssues();
+      fetchFraudGuide();
       setInterval(updateRelativeTimeLabel, 15000);
-
+      
       checkVaultSetupState();
       initWorkspaceLayoutControls();
       initClipboardPasteInterceptors();
@@ -1929,7 +1546,7 @@
       const label = labelInput.value.trim();
       let url = urlInput.value.trim();
       if (!label || !url) { showToast('A label and URL are required', 'error'); return; }
-      if (url.indexOf('://') === -1) { url = 'https://' + url; }
+      if (!/^https?:\/\//i.test(url)) { url = 'https://' + url; }
 
       const newLink = { id: 'qlink_' + Date.now(), label, url };
       quickLinksList.push(newLink);
@@ -1957,7 +1574,7 @@
         showToast('Failed to remove link — please try again', 'error');
       }
     }
-
+    /* Call Trending Modal Interactivity Controllers */
     function openCallTrendingModal() {
       document.getElementById('modal-backdrop-node').classList.add('active');
       document.getElementById('call-trending-modal-window').classList.add('active');
@@ -1979,7 +1596,7 @@
         resolution: document.getElementById('trend-resolution').value,
         notes: document.getElementById('trend-notes').value.trim()
       };
-
+      
       submitBtn.innerText = "Sending...";
       submitBtn.disabled = true;
 
@@ -2119,10 +1736,9 @@
     let calcStoredValue = null;
     let calcPendingOperator = null;
     let calcWaitingForOperand = false;
-    let calcExpressionTrail = '';
-    let calcHistory = [];
+    let calcExpressionTrail = ''; // e.g. "12 + 8 ×" — what's already been entered, shown above the live result
+    let calcHistory = []; // session-only: resets on page reload, same as the rest of the app's client-only state
 
-    // History is session-only by design — consistent with the rest of the app's client state.
     const CALC_OPERATOR_SYMBOLS = { '+': '+', '-': '−', '*': '×', '/': '÷' };
 
     function openCalculatorModal() {
@@ -2153,7 +1769,7 @@
       if (calcWaitingForOperand) {
         calcDisplayValue = digit;
         calcWaitingForOperand = false;
-
+        // Starting a fresh number right after "=" (not mid-chain) clears the trail from the last result
         if (calcPendingOperator === null) { calcExpressionTrail = ''; }
       } else {
         calcDisplayValue = calcDisplayValue === '0' ? digit : calcDisplayValue + digit;
@@ -2199,6 +1815,7 @@
       }
     }
 
+    // Keeps big/small numbers readable in the trail and history without floating-point noise
     function formatCalcNumber(n) {
       if (!isFinite(n)) return '0';
       return String(Math.round(n * 1e10) / 1e10);
@@ -2251,7 +1868,7 @@
 
     function addCalcHistoryEntry(expression, result) {
       calcHistory.unshift({ expression: expression, result: result });
-      if (calcHistory.length > 50) calcHistory.pop();
+      if (calcHistory.length > 50) calcHistory.pop(); // keep it from growing unbounded during a long shift
       renderCalcHistory();
     }
 
@@ -2343,20 +1960,16 @@
 
     /* ============ Carrier Phonebook ============ */
     let carrierPhonebookData = [];
-    // Rendered rows are kept indexed so copy buttons look values up by index instead of
-    // inlining raw text into onclick attributes (avoids quote-escaping breakage).
-    let currentCarrierRows = [];
-
-    function applyCarrierPhonebook(data) {
-      carrierPhonebookData = data || [];
-      document.getElementById('carrier-phonebook-loader').classList.add('hidden');
-      document.getElementById('carrier-phonebook-list').classList.remove('hidden');
-      renderCarrierPhonebook(carrierPhonebookData);
-    }
+    let currentCarrierRows = []; // rows currently rendered (post-filter) — indexed so copy buttons never need to inline raw text
 
     function fetchCarrierPhonebook() {
       google.script.run
-        .withSuccessHandler(applyCarrierPhonebook)
+        .withSuccessHandler(function(data) {
+          carrierPhonebookData = data || [];
+          document.getElementById('carrier-phonebook-loader').classList.add('hidden');
+          document.getElementById('carrier-phonebook-list').classList.remove('hidden');
+          renderCarrierPhonebook(carrierPhonebookData);
+        })
         .withFailureHandler(function(err) {
           console.error('Failed to load carrier phonebook:', err);
           document.getElementById('carrier-phonebook-loader').innerText = 'Failed to load the carrier list.';
@@ -2374,14 +1987,14 @@
       document.getElementById('carrier-phonebook-panel').classList.remove('active');
     }
 
+    // Treats blank cells and the sheet's own "Not available" / "N/A" placeholders the same way
     function isCarrierFieldEmpty(val) {
       if (!val) return true;
       const v = val.trim().toLowerCase();
       return v === '' || v === 'not available' || v === 'n/a' || v === 'none';
     }
 
-    // Use on ALL user-authored text going into innerHTML (macros, folders, preset names, labels).
-    function escapeHtml(str) {
+    function escapeCarrierHtml(str) {
       if (!str) return '';
       return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
@@ -2403,7 +2016,7 @@
           ? phones.map(p => `
               <div class="carrier-phone-chip">
                 <span class="chip-label">${p.label}</span>
-                <span class="chip-phone">${escapeHtml(p.value)}</span>
+                <span class="chip-phone">${escapeCarrierHtml(p.value)}</span>
                 <div class="copy-icon-btn sm" title="Copy ${p.label} number" onclick="copyCarrierField(${idx}, '${p.field}', event)">
                   <span class="material-icons-round">content_copy</span>
                 </div>
@@ -2425,7 +2038,7 @@
                 <span>${d.label}</span>
                 ${!empty ? `<div class="copy-icon-btn sm" title="Copy ${d.label}" onclick="copyCarrierField(${idx}, '${d.field}', event)"><span class="material-icons-round">content_copy</span></div>` : ''}
               </div>
-              <div class="carrier-detail-value${empty ? ' muted' : ''}">${empty ? 'Not available' : escapeHtml(d.value)}</div>
+              <div class="carrier-detail-value${empty ? ' muted' : ''}">${empty ? 'Not available' : escapeCarrierHtml(d.value)}</div>
             </div>`;
         }).join('');
 
@@ -2433,8 +2046,8 @@
           <div class="carrier-row" id="carrier-row-${idx}">
             <div class="carrier-row-head" onclick="toggleCarrierRow(${idx})">
               <div class="carrier-main">
-                <div class="carrier-name">${escapeHtml(row.carrier)}</div>
-                <div class="carrier-hours"><span class="material-icons-round">schedule</span>${isCarrierFieldEmpty(row.hours) ? 'Hours not listed' : escapeHtml(row.hours)}</div>
+                <div class="carrier-name">${escapeCarrierHtml(row.carrier)}</div>
+                <div class="carrier-hours"><span class="material-icons-round">schedule</span>${isCarrierFieldEmpty(row.hours) ? 'Hours not listed' : escapeCarrierHtml(row.hours)}</div>
               </div>
               <span class="material-icons-round carrier-expand-chevron">expand_more</span>
             </div>
@@ -2470,19 +2083,17 @@
 
     /* ============ Porting Issues ============ */
     let portingIssuesData = [];
-    let piCopyTemplates = {};
+    let piCopyTemplates = {}; // id -> raw template text, looked up by index rather than inlined into onclick
     let piTemplateCounter = 0;
-
-    function applyPortingIssues(data) {
-      portingIssuesData = data || [];
-      document.getElementById('porting-issues-loader').classList.add('hidden');
-      document.getElementById('porting-issues-list').classList.remove('hidden');
-      renderPortingIssues(portingIssuesData);
-    }
 
     function fetchPortingIssues() {
       google.script.run
-        .withSuccessHandler(applyPortingIssues)
+        .withSuccessHandler(function(data) {
+          portingIssuesData = data || [];
+          document.getElementById('porting-issues-loader').classList.add('hidden');
+          document.getElementById('porting-issues-list').classList.remove('hidden');
+          renderPortingIssues(portingIssuesData);
+        })
         .withFailureHandler(function(err) {
           console.error('Failed to load porting issues:', err);
           document.getElementById('porting-issues-loader').innerText = 'Failed to load the porting issues guide.';
@@ -2500,14 +2111,17 @@
       document.getElementById('porting-issues-panel').classList.remove('active');
     }
 
+    // Category IDs come from the sheet — keep them safe to use as DOM ids / inline onclick args
     function sanitizePiId(id) {
       return (id || '').toString().trim().replace(/[^a-zA-Z0-9\-_]/g, '-');
     }
 
-    // Sheet syntax: "- line" becomes a bullet; {{label->category-id}} becomes a jump link.
+    // Parses the sheet's lightweight step-text syntax:
+    //   "- some line"                       -> bullet
+    //   "{{link text->target-category-id}}" -> clickable cross-reference jump
     function parsePiStepText(raw) {
       if (!raw) return '';
-      const escaped = escapeHtml(raw);
+      const escaped = escapeCarrierHtml(raw);
       const withLinks = escaped.replace(/\{\{([^{}]+?)->([a-zA-Z0-9_\-]+)\}\}/g, function(match, label, target) {
         return `<a class="pi-link" onclick="jumpToPortingCategory('${sanitizePiId(target)}')">${label}</a>`;
       });
@@ -2542,15 +2156,15 @@
             <span>Copyable template</span>
             <span class="pi-mini-copy" onclick="copyPiTemplate('${id}', event)"><span class="material-icons-round">content_copy</span>Copy</span>
           </div>
-          <pre>${escapeHtml(templateText)}</pre>
+          <pre>${escapeCarrierHtml(templateText)}</pre>
         </div>`;
     }
 
     function buildPiEscalateBlock(step) {
       const chips = [`<span class="pi-chip">Escalate: <b>Yes</b></span>`];
-      if (step.escalationDescription) chips.push(`<span class="pi-chip">Description: <b>${escapeHtml(step.escalationDescription)}</b></span>`);
-      if (step.escalationType) chips.push(`<span class="pi-chip">Type: <b>${escapeHtml(step.escalationType)}</b></span>`);
-      if (step.escalationPriority) chips.push(`<span class="pi-chip">Priority: <b>${escapeHtml(step.escalationPriority)}</b></span>`);
+      if (step.escalationDescription) chips.push(`<span class="pi-chip">Description: <b>${escapeCarrierHtml(step.escalationDescription)}</b></span>`);
+      if (step.escalationType) chips.push(`<span class="pi-chip">Type: <b>${escapeCarrierHtml(step.escalationType)}</b></span>`);
+      if (step.escalationPriority) chips.push(`<span class="pi-chip">Priority: <b>${escapeCarrierHtml(step.escalationPriority)}</b></span>`);
       return `
         <div class="pi-escalate-block">
           <div class="pi-escalate-title"><span class="material-icons-round">priority_high</span>Escalate to Service Continuity</div>
@@ -2570,7 +2184,7 @@
 
       list.innerHTML = categories.map(cat => {
         const safeId = sanitizePiId(cat.id);
-        const codeBadge = cat.errorCode ? `<span class="pi-row-code">${escapeHtml(cat.errorCode)}</span>` : '';
+        const codeBadge = cat.errorCode ? `<span class="pi-row-code">${escapeCarrierHtml(cat.errorCode)}</span>` : '';
 
         const stepsHtml = cat.steps.map(step => `
           <tr>
@@ -2585,7 +2199,7 @@
         return `
           <div class="pi-row" id="pi-row-${safeId}">
             <div class="pi-row-head" onclick="togglePiRow('${safeId}')">
-              <div class="pi-row-title">${codeBadge}${escapeHtml(cat.title)}</div>
+              <div class="pi-row-title">${codeBadge}${escapeCarrierHtml(cat.title)}</div>
               <span class="material-icons-round pi-chevron">expand_more</span>
             </div>
             <div class="pi-detail-wrap">
@@ -2621,6 +2235,8 @@
         .catch(() => showToast('Copy failed', 'error'));
     }
 
+    // Matches everything in a row — error code, title, and every step's text, links,
+    // templates, and escalation properties — not just the visible header
     function filterPortingIssues() {
       const query = document.getElementById('porting-issues-search').value.trim().toLowerCase();
       const rows = document.querySelectorAll('#porting-issues-list .pi-row');
@@ -2647,19 +2263,17 @@
 
     /* ============ Fraud Troubleshooting ============ */
     let fraudGuideData = [];
-    let frCopyTemplates = {};
+    let frCopyTemplates = {}; // id -> raw template text, looked up by index rather than inlined into onclick
     let frTemplateCounter = 0;
-
-    function applyFraudGuide(data) {
-      fraudGuideData = data || [];
-      document.getElementById('fraud-guide-loader').classList.add('hidden');
-      document.getElementById('fraud-guide-list').classList.remove('hidden');
-      renderFraudGuide(fraudGuideData);
-    }
 
     function fetchFraudGuide() {
       google.script.run
-        .withSuccessHandler(applyFraudGuide)
+        .withSuccessHandler(function(data) {
+          fraudGuideData = data || [];
+          document.getElementById('fraud-guide-loader').classList.add('hidden');
+          document.getElementById('fraud-guide-list').classList.remove('hidden');
+          renderFraudGuide(fraudGuideData);
+        })
         .withFailureHandler(function(err) {
           console.error('Failed to load fraud guide:', err);
           document.getElementById('fraud-guide-loader').innerText = 'Failed to load the fraud troubleshooting guide.';
@@ -2689,20 +2303,22 @@
 
     function buildFrEscalateBlock(def) {
       const chips = ['<span class="fr-chip">Escalate: <b>Yes</b></span>'];
-      if (def.description) chips.push('<span class="fr-chip">Description: <b>' + escapeHtml(def.description) + '</b></span>');
-      if (def.issueType) chips.push('<span class="fr-chip">Type: <b>' + escapeHtml(def.issueType) + '</b></span>');
-      if (def.priority) chips.push('<span class="fr-chip">Priority: <b>' + escapeHtml(def.priority) + '</b></span>');
+      if (def.description) chips.push('<span class="fr-chip">Description: <b>' + escapeCarrierHtml(def.description) + '</b></span>');
+      if (def.issueType) chips.push('<span class="fr-chip">Type: <b>' + escapeCarrierHtml(def.issueType) + '</b></span>');
+      if (def.priority) chips.push('<span class="fr-chip">Priority: <b>' + escapeCarrierHtml(def.priority) + '</b></span>');
       return '<div class="fr-escalate-block"><div class="fr-escalate-title"><span class="material-icons-round">priority_high</span>Escalate to Service Continuity</div><div class="fr-chip-grid">' + chips.join('') + '</div></div>';
     }
 
     function buildFrCopyBlock(text) {
       const id = 'fr-tmpl-' + (frTemplateCounter++);
       frCopyTemplates[id] = text;
-      return '<div class="fr-copy-block"><div class="fr-copy-label"><span>Private note template</span><span class="fr-mini-copy" onclick="copyFrTemplate(\'' + id + '\', event)"><span class="material-icons-round">content_copy</span>Copy</span></div><pre>' + escapeHtml(text) + '</pre></div>';
+      return '<div class="fr-copy-block"><div class="fr-copy-label"><span>Private note template</span><span class="fr-mini-copy" onclick="copyFrTemplate(\'' + id + '\', event)"><span class="material-icons-round">content_copy</span>Copy</span></div><pre>' + escapeCarrierHtml(text) + '</pre></div>';
     }
 
-    // Resolves {{label->section-id}} jump links and [[ESCALATE:id]] / [[TEMPLATE:id]] inline
-    // components against this section's def rows. Content is admin-authored HTML from the sheet.
+    // Resolves {{link text->target-section-id}} cross-references and the inline
+    // [[ESCALATE:id]] / [[TEMPLATE:id]] component tokens against this section's defs, then
+    // returns the ready-to-insert HTML. Content itself is trusted, admin-authored HTML from the
+    // sheet (same trust level as the rest of this app's sheet-driven content), not user input.
     function parseFrContent(raw, defs) {
       if (!raw) return '';
       let html = raw;
@@ -2731,13 +2347,13 @@
       if (block.type === 'callout-warning') return buildFrCalloutBlock('warning', parsed);
       if (block.type === 'callout-redirect') return buildFrCalloutBlock('redirect', parsed);
       if (block.type === 'callout-danger') return buildFrCalloutBlock('danger', parsed);
-      return parsed;
+      return parsed; // plain "html" block
     }
 
     function renderFrSubsection(subsection, defs) {
       const blocksHtml = subsection.blocks.map(b => renderFrBlock(b, defs)).join('');
       if (!subsection.title) return blocksHtml;
-      return '<div class="fr-subsection"><div class="fr-subsection-title"><span class="material-icons-round">chevron_right</span>' + escapeHtml(subsection.title) + '</div>' + blocksHtml + '</div>';
+      return '<div class="fr-subsection"><div class="fr-subsection-title"><span class="material-icons-round">chevron_right</span>' + escapeCarrierHtml(subsection.title) + '</div>' + blocksHtml + '</div>';
     }
 
     function renderFraudGuide(sections) {
@@ -2749,7 +2365,7 @@
 
       const introEl = document.getElementById('fraud-guide-intro');
       if (persistent) {
-        introEl.innerHTML = '<h4><span class="material-icons-round">shield</span>' + escapeHtml(persistent.title) + '</h4>' +
+        introEl.innerHTML = '<h4><span class="material-icons-round">shield</span>' + escapeCarrierHtml(persistent.title) + '</h4>' +
           persistent.subsections.map(sub => renderFrSubsection(sub, persistent.defs)).join('');
         introEl.style.display = '';
       } else {
@@ -2764,24 +2380,14 @@
 
       list.innerHTML = rest.map(section => {
         const safeId = sanitizeFrId(section.id);
-        const subtitle = section.subtitle ? ('<div class="fr-row-sub">' + escapeHtml(section.subtitle) + '</div>') : '';
+        const subtitle = section.subtitle ? ('<div class="fr-row-sub">' + escapeCarrierHtml(section.subtitle) + '</div>') : '';
         const bodyHtml = section.subsections.map(sub => renderFrSubsection(sub, section.defs)).join('');
         return '<div class="fr-row" id="fr-row-' + safeId + '">' +
           '<div class="fr-row-head" onclick="toggleFrRow(\'' + safeId + '\')">' +
-          '<div class="fr-row-title">' + escapeHtml(section.title) + subtitle + '</div>' +
+          '<div class="fr-row-title">' + escapeCarrierHtml(section.title) + subtitle + '</div>' +
           '<span class="material-icons-round fr-chevron">expand_more</span></div>' +
           '<div class="fr-detail-wrap"><div class="fr-detail-inner">' + bodyHtml + '</div></div></div>';
       }).join('');
-
-      // Route the static Fraud Teams block into the sheet-driven "Fraud Routing" section's body —
-      // that section is already about ticket-close routing, so the team lookup lives there rather
-      // than higher up in the panel. Skips silently if the section doesn't exist in the sheet.
-      const routingRow = document.getElementById('fr-row-fraud-routing');
-      const tmpl = document.getElementById('fr-teams-block-template');
-      if (routingRow && tmpl) {
-        const inner = routingRow.querySelector('.fr-detail-inner');
-        if (inner) inner.appendChild(tmpl.content.cloneNode(true));
-      }
     }
 
     function toggleFrRow(safeId) {
@@ -2808,6 +2414,8 @@
         .catch(() => showToast('Copy failed', 'error'));
     }
 
+    // Matches everything in a row's rendered content — callouts, escalation chips, template
+    // text, nested step text — not just the visible header, same pattern as Porting Issues
     function filterFraudGuide() {
       const query = document.getElementById('fraud-guide-search').value.trim().toLowerCase();
       const rows = document.querySelectorAll('#fraud-guide-list .fr-row');
@@ -2872,7 +2480,7 @@
       return v === 'yes' || v === 'y' || v === 'true' || v.includes('✔') || v.includes('check');
     }
 
-    let currentEscalationGuideRows = [];
+    let currentEscalationGuideRows = []; // rows currently rendered (post-filter) — indexed for copy buttons
 
     function renderEscalationGuideRows(rows) {
       currentEscalationGuideRows = rows;
@@ -2943,9 +2551,17 @@
       }
     }
 
-    // Paste cleanup: strips fg/bg colors so pasted text matches the theme, flattens the
-    // <div>/<p> wrappers Word/Excel/Outlook/Docs add (the "phantom blank line" cause) into
-    // inline content + <br>, and trims leftover edge <br>s from empty wrapper paragraphs.
+    // Strips background AND foreground text color (the classic "pasted text looks wrong" issue —
+    // e.g. black text from Word/Excel/Outlook clashing with this app's dark theme) while leaving
+    // bold, italics, links, and line breaks intact so pasted text always matches the app's theme.
+    //
+    // Also fixes the "phantom blank line" issue: Word/Excel/Outlook/Google Docs wrap copied
+    // content in their own <div>/<p> blocks (often with a trailing empty one). This editor is a
+    // plain contenteditable that otherwise only uses inline text + <br> for line breaks, so
+    // inserting a real block element into it creates an implicit line break the person never
+    // typed. Flattening those wrappers into inline content + <br> (and trimming any leading/
+    // trailing <br> left over from an empty wrapper) makes pasted text land exactly where the
+    // cursor was, with no extra line to go back and delete.
     function sanitizePastedHtml(rawHtml) {
       const container = document.createElement('div');
       container.innerHTML = rawHtml;
@@ -2962,6 +2578,10 @@
         if (el.getAttribute('style') === '') { el.removeAttribute('style'); }
       });
 
+      // Unwrap every div/p into its own children, inserting a single <br> in place of any
+      // block boundary that had more content after it (so multi-paragraph pastes still get a
+      // line break between paragraphs) — but a wrapper with nothing following it (the common
+      // single-wrapper-div or trailing-empty-paragraph case) contributes no extra line at all.
       let block;
       let guard = 0;
       while ((block = container.querySelector('div, p')) && guard < 5000) {
@@ -2973,6 +2593,8 @@
         parent.removeChild(block);
       }
 
+      // Trim leading/trailing <br> and whitespace-only text nodes — the leftover shell of
+      // whatever empty wrapper paragraph the source app tacked on.
       const isTrimmable = (node) => {
         if (!node) return false;
         if (node.nodeType === 1 && node.tagName === 'BR') return true;
@@ -2992,18 +2614,21 @@
       editors.forEach(id => {
         const field = document.getElementById(id);
         if (!field) return;
-
+        
         field.addEventListener('paste', function(event) {
           const clipboardData = event.clipboardData || event.originalEvent.clipboardData;
           const clipboardItems = clipboardData.items;
 
+          // Pasted image (screenshots, copied images) — unchanged behavior.
           for (let i = 0; i < clipboardItems.length; i++) {
             const item = clipboardItems[i];
             if (item.type.indexOf('image') === 0) {
-              event.preventDefault();
+              event.preventDefault(); 
               const imageFile = item.getAsFile();
               const reader = new FileReader();
 
+              // Reading the file is asynchronous — track completion so Copy can wait for it
+              // instead of copying the box before the image has actually been inserted.
               let resolvePaste;
               const pastePromise = new Promise((resolve) => { resolvePaste = resolve; });
               pendingImagePastePromises.push(pastePromise);
@@ -3026,6 +2651,9 @@
             }
           }
 
+          // Pasted rich text (e.g. from Excel/Word/Outlook) — strip background coloring
+          // so it can't paste a white/colored box behind the text, but keep everything else
+          // (formatting, links, plain text, emoji) exactly as pasted.
           const html = clipboardData.getData('text/html');
           if (html) {
             event.preventDefault();
@@ -3034,34 +2662,12 @@
             return;
           }
 
+          // Plain text paste (including emoji) — no formatting to strip, let the browser handle it.
         });
       });
     }
 
-    // One round trip for all sheet-driven data. On failure, falls back to the pre-bundle
-    // individual fetches so one bad reader can't blank the whole app.
-    function fetchStartupBundle() {
-      google.script.run
-        .withSuccessHandler(function(bundle) {
-          if (!bundle) { fetchPresetsIndividually(); return; }
-          initializeSheetPresets(bundle.fdPresets || []);
-          initializeWorkNotesPresets(bundle.workNotesPresets || []);
-          initializeThreadRequestsPresets(bundle.threadRequestsPresets || []);
-          applyCarrierPhonebook(bundle.carrierPhonebook || []);
-          applyPortingIssues(bundle.portingIssues || []);
-          applyFraudGuide(bundle.fraudGuide || []);
-        })
-        .withFailureHandler(function(err) {
-          console.error('Startup bundle failed, falling back to individual fetches:', err);
-          fetchPresetsIndividually();
-          fetchCarrierPhonebook();
-          fetchPortingIssues();
-          fetchFraudGuide();
-        })
-        .getStartupBundle();
-    }
-
-    function fetchPresetsIndividually() {
+    function fetchSystemPresetsAndNotes() {
       google.script.run
         .withSuccessHandler(function(fdData) { initializeSheetPresets(fdData); })
         .withFailureHandler(function(err) { console.error('Failed to load FD Notes presets:', err); initializeSheetPresets([]); })
@@ -3076,11 +2682,8 @@
         .withSuccessHandler(function(ticketData) { initializeThreadRequestsPresets(ticketData); })
         .withFailureHandler(function(err) { console.error('Failed to load Thread Requests presets:', err); initializeThreadRequestsPresets([]); })
         .getThreadRequestsPresets();
-    }
 
-    // Notes load separately from the bundle — they're UserProperties (fast) and must never
-    // be blocked by a slow or failing sheet read.
-    function fetchUserNotes() {
+      // Notes load independently — they must never be blocked by a preset-sheet fetch being slow or failing.
       google.script.run
         .withSuccessHandler(initializeNotes)
         .withFailureHandler(function(err) { console.error('Failed to load notes:', err); initializeNotes('[]'); showToast('Could not load saved notes', 'error'); })
@@ -3170,7 +2773,6 @@
       closeCarrierPhonebookModal();
       closePortingIssuesModal();
       closeFraudGuideModal();
-      closeCommandPalette();
       closeQAChecklistModal();
       closeCalendarPopupModal();
       closeCalculatorModal();
@@ -3194,11 +2796,12 @@
         console.error('Failed to load signatures from backend:', e);
       }
 
+      // One-time migration: promote anything that only ever lived in localStorage
       const localSig1 = localStorage.getItem('GE_SIGNATURE_1');
       const localSig2 = localStorage.getItem('GE_SIGNATURE_2');
       if (!sigs.sig1 && !sigs.sig2 && (localSig1 || localSig2)) {
         sigs = { sig1: localSig1 || '', sig2: localSig2 || '' };
-        try { await gsRun('saveSignatures', JSON.stringify(sigs)); } catch (e) {  }
+        try { await gsRun('saveSignatures', JSON.stringify(sigs)); } catch (e) { /* will retry on next Save */ }
       }
       localStorage.removeItem('GE_SIGNATURE_1');
       localStorage.removeItem('GE_SIGNATURE_2');
@@ -3246,6 +2849,7 @@
         console.error('Failed to load custom presets from backend:', e);
       }
 
+      // One-time migration: promote anything that only ever lived in localStorage
       const localOnly = localStorage.getItem('GE_CUSTOM_PRESETS');
       if (backendPresets.length === 0 && localOnly) {
         try {
@@ -3254,7 +2858,7 @@
             backendPresets = parsedLocal;
             await gsRun('saveCustomPresets', JSON.stringify(backendPresets));
           }
-        } catch (e) {  }
+        } catch (e) { /* ignore malformed local data */ }
       }
       localStorage.removeItem('GE_CUSTOM_PRESETS');
 
@@ -3279,38 +2883,38 @@
       const workSelector = document.getElementById('work-notes-preset-selector');
       const ticketSelector = document.getElementById('ticket-summary-preset-selector');
       const customSelector = document.getElementById('custom-preset-selector');
-
+      
       if (!systemSelector || !workSelector || !ticketSelector || !customSelector) return;
-
+      
       systemSelector.innerHTML = '<option value="" disabled selected>-- Select Layout --</option>';
       workSelector.innerHTML = '<option value="" disabled selected>-- Select Layout --</option>';
       ticketSelector.innerHTML = '<option value="" disabled selected>-- Select Layout --</option>';
       customSelector.innerHTML = '<option value="" disabled selected>-- Select Preset --</option>';
-
+      
       if (sheetPresets.length) {
         sheetPresets.forEach((p, idx) => {
-          systemSelector.innerHTML += `<option value="${idx}">${escapeHtml(p.name)}</option>`;
+          systemSelector.innerHTML += `<option value="${idx}">${p.name}</option>`;
         });
       } else { systemSelector.innerHTML = '<option value="" disabled selected>No Layouts</option>'; }
 
       if (workNotesPresets.length) {
         workNotesPresets.forEach((p, idx) => {
-          workSelector.innerHTML += `<option value="${idx}">${escapeHtml(p.name)}</option>`;
+          workSelector.innerHTML += `<option value="${idx}">${p.name}</option>`;
         });
       } else { workSelector.innerHTML = '<option value="" disabled selected>No Layouts</option>'; }
 
       if (threadrequestsPresets.length) {
         threadrequestsPresets.forEach((p, idx) => {
-          ticketSelector.innerHTML += `<option value="${idx}">${escapeHtml(p.name)}</option>`;
+          ticketSelector.innerHTML += `<option value="${idx}">${p.name}</option>`;
         });
       } else { ticketSelector.innerHTML = '<option value="" disabled selected>No Layouts</option>'; }
 
       if (customPresets.length) {
         customPresets.forEach((p, idx) => {
-          customSelector.innerHTML += `<option value="${idx}">${escapeHtml(p.name)}</option>`;
+          customSelector.innerHTML += `<option value="${idx}">${p.name}</option>`;
         });
       } else { customSelector.innerHTML = '<option value="" disabled selected>No Custom Presets</option>'; }
-
+      
       renderPresetManagerList();
     }
 
@@ -3326,7 +2930,7 @@
       }
       listContainer.innerHTML = customPresets.map((p, idx) => `
         <div class="panel-item-row">
-          <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:320px;">${escapeHtml(p.name)}</span>
+          <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:320px;">${p.name}</span>
           <span class="material-icons-round delete-note-icon" style="font-size:18px;" onclick="removeCustomPreset(${idx})">delete</span>
         </div>
       `).join('');
@@ -3404,6 +3008,8 @@
       }
     }
 
+    // Mirrors sendTemplateFieldsToChat, for Thread Requests presets with no fill-in fields
+    // (so they never went through the Fill In Template modal in the first place)
     function sendRawThreadRequestToChat(text, destination, targetEditor) {
       google.script.run
         .withSuccessHandler(function(response) {
@@ -3443,7 +3049,8 @@
     }
 
     /* ============ Typed Template Fields ============ */
-
+    // Templates in the Sheet can embed tokens like {{Account Number:number}}, {{Escalation Date:date},
+    // {{Issue Summary:text}} — these get parsed into a small validated form instead of raw text injection.
     function templateHasFields(text) {
       TEMPLATE_TOKEN_REGEX.lastIndex = 0;
       return TEMPLATE_TOKEN_REGEX.test(text || "");
@@ -3465,7 +3072,7 @@
     }
 
     let activeTemplateInjectionTarget = 'active-editor';
-    let activeTemplateChatDestination = '';
+    let activeTemplateChatDestination = ''; // set only when a Thread Requests preset with a Chat Destination is open
 
     function openTemplateFieldsModal(templateText, targetEditorId, chatDestination) {
       activeTemplateSegments = parseTemplateTokens(templateText);
@@ -3506,7 +3113,7 @@
           <div class="field-group">
             <div class="field-label-row">
               <div class="field-type-icon ${seg.fieldType}"><span class="material-icons-round">${iconMap[seg.fieldType]}</span></div>
-              <span class="field-label">${escapeHtml(seg.label)}</span>
+              <span class="field-label">${seg.label}</span>
               <span class="field-hint">${hintMap[seg.fieldType]}</span>
             </div>
             ${inputHtml}
@@ -3593,6 +3200,8 @@
       const targetBtn = event ? event.currentTarget : null;
       const originalButtonHtml = targetBtn ? targetBtn.innerHTML : null;
 
+      // If an image was just pasted a moment ago, its file read may still be in flight —
+      // wait for it so the copy actually includes the image instead of missing it.
       if (pendingImagePastePromises.length > 0) {
         if (targetBtn) { targetBtn.innerText = 'Please wait...'; }
         await Promise.all(pendingImagePastePromises);
@@ -3601,24 +3210,24 @@
       const editor = document.getElementById(targetEditorId);
       const textContent = editor.innerText || editor.textContent;
       const htmlContent = editor.innerHTML;
-
+      
       const blobHtml = new Blob([htmlContent], { type: 'text/html' });
       const blobText = new Blob([textContent], { type: 'text/plain' });
-
+      
       const data = [new ClipboardItem({
         'text/html': blobHtml,
         'text/plain': blobText
       })];
-
+      
       navigator.clipboard.write(data).then(() => {
         if (targetBtn) {
-          targetBtn.innerHTML = `<span class="material-icons-round" style="font-size:14px;">check</span> Copied!`;
+          targetBtn.innerHTML = `<span class="material-icons-round" style="font-size:14px;">check</span> Copied!`; 
           setTimeout(() => { targetBtn.innerHTML = originalButtonHtml; }, 1500);
         }
       }).catch(err => {
         navigator.clipboard.writeText(textContent).then(() => {
           if (targetBtn) {
-            targetBtn.innerHTML = `<span class="material-icons-round" style="font-size:14px;">check</span> Copied!`;
+            targetBtn.innerHTML = `<span class="material-icons-round" style="font-size:14px;">check</span> Copied!`; 
             setTimeout(() => { targetBtn.innerHTML = originalButtonHtml; }, 1500);
           }
         });
@@ -3694,6 +3303,8 @@
       }
     }
 
+    // Loads a slot's content into the two editors. Does NOT save whatever was there before —
+    // callers that are switching away from unsaved work should call autoSaveCurrentSlot() first.
     function loadSlotIntoEditor(index) {
       activeSlotIndex = index;
       const slot = noteSlots[index];
@@ -3715,6 +3326,7 @@
       loadSlotIntoEditor(index);
     }
 
+    // Saves whatever is currently in the editors into the active slot, without changing the view.
     function autoSaveCurrentSlot() {
       const content = document.getElementById('active-editor').innerHTML;
       const secondaryContent = document.getElementById('secondary-editor').innerHTML;
@@ -3724,6 +3336,7 @@
       renderNoteTabs();
     }
 
+    // Debounced autosave while typing, since there's no manual "Save Note" button anymore.
     let autosaveDebounceTimer = null;
     function scheduleAutosave() {
       clearTimeout(autosaveDebounceTimer);
@@ -3744,6 +3357,8 @@
       }
     }
 
+    // Strips bold/italic/underline/color/background/font formatting from a note box,
+    // leaving plain text, line breaks, and any embedded images completely untouched.
     function clearFormatting(editorId) {
       if (!confirm("Clear all text formatting in this box? Images will be kept.")) return;
       const editor = document.getElementById(editorId);
@@ -3751,19 +3366,19 @@
 
       const walk = (node) => {
         Array.from(node.childNodes).forEach(child => {
-          if (child.nodeType !== 1) return;
-          if (child.tagName === 'IMG') return;
+          if (child.nodeType !== 1) return; // text node — nothing to strip
+          if (child.tagName === 'IMG') return; // leave images completely untouched
 
-          walk(child);
+          walk(child); // clean children first so nested spans/fonts are handled too
 
           if (child.tagName === 'BR' || child.tagName === 'DIV' || child.tagName === 'P') {
-
+            // Structural/line-break element — keep it, just drop any styling
             child.removeAttribute('style');
             child.removeAttribute('bgcolor');
             child.removeAttribute('color');
             child.removeAttribute('class');
           } else {
-
+            // Formatting wrapper (b, strong, i, em, u, span, font, mark...) — unwrap it, keep its contents
             while (child.firstChild) { child.parentNode.insertBefore(child.firstChild, child); }
             child.parentNode.removeChild(child);
           }
@@ -3783,22 +3398,7 @@
       if (index === activeSlotIndex) { loadSlotIntoEditor(index); } else { renderNoteTabs(); }
     }
 
-    // saveUserProperty returns {success:false, error} on quota overflow — without surfacing it,
-    // saves fail silently and users lose work on reload without ever knowing.
-    function handleCloudSaveResult(response, what) {
-      if (!response || response.success === false) {
-        const detail = response && response.error ? response.error : 'Unknown error';
-        console.error('Failed to save ' + what + ':', detail);
-        showToast('Could not save ' + what + ' — changes may be lost on reload', 'error');
-      }
-    }
-
-    function saveNotesToCloud() {
-      google.script.run
-        .withSuccessHandler(function(res) { handleCloudSaveResult(res, 'notes'); })
-        .withFailureHandler(function(err) { console.error('Failed to save notes:', err); showToast('Could not save notes — changes may be lost on reload', 'error'); })
-        .saveUserNotes(JSON.stringify(noteSlots));
-    }
+    function saveNotesToCloud() { google.script.run.saveUserNotes(JSON.stringify(noteSlots)); }
 
     function renderNoteTabs() {
       const row = document.getElementById('note-tabs-row');
@@ -3840,19 +3440,23 @@
     return;
   }
 
+  // Custom helper to parse HTML formatting for URLs and markdown bold ** tokens
   const processRichFeedContent = (text) => {
     if (!text) return "";
-
+    
+    // 1. Convert HTML reserved symbols to avoid breaking layout elements
     let cleanOutput = text
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
-
+      
+    // 2. Parse markdown double asterisks (**text**) into explicit bold elements with forced priority styling
     cleanOutput = cleanOutput.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 700 !important; color: var(--text-white);">$1</strong>');
-
-    const urlRegex = new RegExp('(https?://[^\\s]+)', 'gi');
+    
+    // 3. Scan for raw web addresses — render image URLs as actual images, everything else as a clickable link
+    const urlRegex = /(https?:\/\/[^\s]+)/gi;
     const isImageUrl = (url) => /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(url) || /googleusercontent\.com|drive\.google\.com\/uc/i.test(url);
     return cleanOutput.replace(urlRegex, (url) => {
       if (isImageUrl(url)) {
@@ -3870,6 +3474,7 @@
     } catch (e) { return ''; }
   };
 
+  // Maps each update (text + any inline images) into the feed list
   list.innerHTML = messages.map(item => {
     const imagesHtml = (item.images || []).map(src => `<img src="${src}" alt="Update attachment" loading="lazy">`).join('');
     const hasMeta = item.sender || item.timestamp;
@@ -3887,61 +3492,61 @@
     async function initFoldersMatrixAndLoadMacros() {
       const defaultFolders = ["Ticket Summary", "Work Notes"];
       const fallbackDefaults = [
-        {
-          id: "qr_1",
+        { 
+          id: "qr_1", 
           title: "Duplicate Ticket",
-          text: "***Wireless Case Management*** Duplicate ticket for [specific, yet brief summary of issue]. Please reference Ticket XXXXX for additional support",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Duplicate ticket for [specific, yet brief summary of issue]. Please reference Ticket XXXXX for additional support", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_2",
+        { 
+          id: "qr_2", 
           title: "First No Contact",
-          text: "***Wireless Case Management*** Attempted to contact customer regarding [specific, yet brief summary of issue]. Please advise the customer to contact us at (833) 558-5823",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Attempted to contact customer regarding [specific, yet brief summary of issue]. Please advise the customer to contact us at (833) 558-5823", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_3",
+        { 
+          id: "qr_3", 
           title: "Invalid ACS",
-          text: "***Wireless Case Management*** Invalid ACS escalation as per flows.Submited Ticket XXXXX to resolve [specific, yet brief summary of issue]",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Invalid ACS escalation as per flows.Submited Ticket XXXXX to resolve [specific, yet brief summary of issue]", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_4",
+        { 
+          id: "qr_4", 
           title: "Order on 72 Hold",
-          text: "***Wireless Case Management*** Order submitted is under 72 hour hold. Order for [specific, yet brief summary of the order] will complete after 72 hours from order submission.",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Order submitted is under 72 hour hold. Order for [specific, yet brief summary of the order] will complete after 72 hours from order submission.", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_5",
+        { 
+          id: "qr_5", 
           title: "Resolved cases",
-          text: "***Wireless Case Management*** Customers issue with [specific, yet brief summary of issue] should be resolved. If they experience additional issues, please assist and troubleshoot as normal.",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Customers issue with [specific, yet brief summary of issue] should be resolved. If they experience additional issues, please assist and troubleshoot as normal.", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_6",
+        { 
+          id: "qr_6", 
           title: "Second No Contact",
-          text: "***Wireless Case Management*** Attempted to contact customer regarding [specific, yet brief summary of issue]. The ticket has been closed after multiple attempts.",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Attempted to contact customer regarding [specific, yet brief summary of issue]. The ticket has been closed after multiple attempts.", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_7",
+        { 
+          id: "qr_7", 
           title: "Spoke to customer",
-          text: "***Wireless Case Management*** Spoke with customer in regards to [specific, yet brief summary of issue]",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Spoke with customer in regards to [specific, yet brief summary of issue]", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
-        {
-          id: "qr_8",
+        { 
+          id: "qr_8", 
           title: "Trouble Ticket created",
-          text: "***Wireless Case Management*** Customer's issue with [specific, yet brief summary of issue] has been escalated to fix agents, Case Managers will make contact with updates",
-          category: "Ticket Summary",
-          favorite: false
+          text: "***Wireless Case Management*** Customer's issue with [specific, yet brief summary of issue] has been escalated to fix agents, Case Managers will make contact with updates", 
+          category: "Ticket Summary", 
+          favorite: false 
         },
         {
           id: "qr_9",
@@ -4001,17 +3606,19 @@
         appFoldersList = defaultFolders;
       }
 
+      // Self-heal: make sure both standard folders exist even for accounts set up before this was fixed
       let foldersNeededSaving = false;
       defaultFolders.forEach(f => {
         if (!appFoldersList.includes(f)) { appFoldersList.push(f); foldersNeededSaving = true; }
       });
 
+      // Retired folders — remove them if an account already has them saved from before
       const retiredFolders = ["Welcome", "Wait", "Ending"];
       const beforeRetiredCleanup = appFoldersList.length;
       appFoldersList = appFoldersList.filter(f => !retiredFolders.includes(f));
       if (appFoldersList.length !== beforeRetiredCleanup) { foldersNeededSaving = true; }
 
-      if (foldersNeededSaving) { saveFoldersToCloud(); }
+      if (foldersNeededSaving) { google.script.run.saveCustomFolders(JSON.stringify(appFoldersList)); }
 
       renderFolderNavigationLayout();
       rebuildModalDropdownOptions();
@@ -4029,6 +3636,9 @@
           quickResponsesList = parsedMacros;
           let macrosNeededSaving = false;
 
+          // Migrate legacy items that still embed the title as a "Title - message" prefix
+          // in the text field, instead of having a proper separate title. Preserves any
+          // custom edits the user has made — just splits the format, doesn't overwrite content.
           quickResponsesList = quickResponsesList.map(qr => {
             if (qr.title) return qr;
             const match = qr.text.match(/^(.*?)\s-\s([\s\S]*)$/);
@@ -4037,6 +3647,7 @@
             return { ...qr, title: qr.text.length > 40 ? qr.text.substring(0, 40) + '...' : qr.text };
           });
 
+          // Remove the retired Welcome/Wait/Ending cards for accounts that already have them saved
           const beforeRetiredCleanup = quickResponsesList.length;
           quickResponsesList = quickResponsesList.filter(qr => !retiredQrIds.includes(qr.id));
           if (quickResponsesList.length !== beforeRetiredCleanup) { macrosNeededSaving = true; }
@@ -4057,20 +3668,19 @@
       const groupNode = document.getElementById('dynamic-folders-nav-group');
       if (!groupNode) return;
       groupNode.innerHTML = '';
-
+      
       appFoldersList.forEach(folder => {
         const btn = document.createElement('div');
         btn.className = "qr-footer-btn";
         if (activeQRFilterCategory === folder) btn.classList.add('active');
         btn.id = `qr-filter-${folder.toLowerCase().replace(/\s+/g, '-')}`;
-        btn.addEventListener('click', () => setQuickResponseCategory(folder));
-
+        btn.setAttribute('onclick', `setQuickResponseCategory('${folder}')`);
+        
         btn.innerHTML = `
           <span class="material-icons-round">folder</span>
-          <span class="folder-label-text">${escapeHtml(folder)}</span>
-          <span class="material-icons-round folder-delete-icon" title="Remove Folder" data-role="delete">delete_outline</span>
+          <span class="folder-label-text">${folder}</span>
+          <span class="material-icons-round folder-delete-icon" title="Remove Folder" onclick="deleteCustomFolder('${folder}', event)">delete_outline</span>
         `;
-        btn.querySelector('[data-role="delete"]').addEventListener('click', (e) => deleteCustomFolder(folder, e));
         groupNode.appendChild(btn);
       });
     }
@@ -4080,7 +3690,7 @@
       if (!selectNode) return;
       selectNode.innerHTML = '';
       appFoldersList.forEach(folder => {
-        selectNode.innerHTML += `<option value="${escapeHtml(folder)}">${escapeHtml(folder)} Folder</option>`;
+        selectNode.innerHTML += `<option value="${folder}">${folder} Folder</option>`;
       });
     }
 
@@ -4092,36 +3702,20 @@
         showToast("This folder name already exists", "error"); return;
       }
       appFoldersList.push(cleanName);
-      saveFoldersToCloud();
+      google.script.run.saveCustomFolders(JSON.stringify(appFoldersList));
       renderFolderNavigationLayout(); rebuildModalDropdownOptions();
     }
 
     function deleteCustomFolder(folderName, event) {
       if (event) event.stopPropagation();
-      const folderIdx = appFoldersList.indexOf(folderName);
-      if (folderIdx === -1) return;
-      const reassignedIds = quickResponsesList.filter(item => item.category === folderName).map(item => item.id);
-      const previousFilter = activeQRFilterCategory;
-
+      if (!confirm(`Are you sure you want to delete the folder "${folderName}"? Content inside will be reassigned to 'Welcome'.`)) return;
       appFoldersList = appFoldersList.filter(f => f !== folderName);
       quickResponsesList.forEach(item => { if (item.category === folderName) item.category = "Welcome"; });
-      saveFoldersToCloud();
+      google.script.run.saveCustomFolders(JSON.stringify(appFoldersList));
       saveQuickResponsesToCloud();
       if (activeQRFilterCategory === folderName) activeQRFilterCategory = "all";
       renderFolderNavigationLayout(); rebuildModalDropdownOptions(); renderQuickResponsesDashboard();
       setQuickResponseCategory(activeQRFilterCategory);
-
-      const macroNote = reassignedIds.length ? ' (' + reassignedIds.length + ' macro' + (reassignedIds.length === 1 ? '' : 's') + ' moved to Welcome)' : '';
-      showUndoToast('Deleted folder "' + escapeHtml(folderName) + '"' + macroNote, function() {
-        appFoldersList.splice(Math.min(folderIdx, appFoldersList.length), 0, folderName);
-        quickResponsesList.forEach(item => { if (reassignedIds.includes(item.id)) item.category = folderName; });
-        activeQRFilterCategory = previousFilter;
-        saveFoldersToCloud();
-        saveQuickResponsesToCloud();
-        renderFolderNavigationLayout(); rebuildModalDropdownOptions(); renderQuickResponsesDashboard();
-        setQuickResponseCategory(activeQRFilterCategory);
-        showToast('Folder restored', 'success');
-      });
     }
 
     function renderQuickResponsesDashboard() {
@@ -4146,13 +3740,13 @@
         card.onclick = () => navigator.clipboard.writeText(qr.text).then(() => showToast('Copied to clipboard', 'success'));
         card.innerHTML = `
           <div class="qr-deck-card-head">
-            <div style="font-weight:700; font-size:11.5px; color:var(--neon-orange); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${escapeHtml(titlePart)}</div>
+            <div style="font-weight:700; font-size:11.5px; color:var(--neon-orange); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${titlePart}</div>
             <span class="material-icons-round qr-action-icon${qr.favorite ? ' active' : ''}" title="Toggle favorite" data-role="fav">${qr.favorite ? 'star' : 'star_outline'}</span>
             <span class="material-icons-round qr-action-icon" title="Copy to clipboard" data-role="copy">content_copy</span>
             <span class="material-icons-round qr-action-icon" title="Edit" data-role="edit">edit</span>
             <span class="material-icons-round qr-action-icon" title="Delete" data-role="delete">delete_outline</span>
           </div>
-          <div class="qr-preview-wrap"><div class="qr-preview-inner"><div class="qr-deck-body">${escapeHtml(qr.text)}</div></div></div>
+          <div class="qr-preview-wrap"><div class="qr-preview-inner"><div class="qr-deck-body">${qr.text}</div></div></div>
         `;
         card.querySelector('[data-role="fav"]').addEventListener('click', (e) => toggleQuickResponseFav(qr.id, e));
         card.querySelector('[data-role="copy"]').addEventListener('click', (e) => { e.stopPropagation(); navigator.clipboard.writeText(qr.text).then(() => showToast('Copied to clipboard', 'success')); });
@@ -4240,34 +3834,12 @@
 
     function deleteQuickResponse(itemId, event) {
       event.stopPropagation();
-      const idx = quickResponsesList.findIndex(i => i.id === itemId);
-      if (idx === -1) return;
-      const removed = quickResponsesList[idx];
-
+      if (!confirm("Permanently remove this quick response card?")) return;
       quickResponsesList = quickResponsesList.filter(i => i.id !== itemId);
       saveQuickResponsesToCloud(); renderQuickResponsesDashboard();
-
-      const label = removed.title ? removed.title : (removed.text.split('-')[0] || 'macro').trim();
-      showUndoToast('Deleted "' + escapeHtml(label) + '"', function() {
-        quickResponsesList.splice(Math.min(idx, quickResponsesList.length), 0, removed);
-        saveQuickResponsesToCloud(); renderQuickResponsesDashboard();
-        showToast('Macro restored', 'success');
-      });
     }
 
-    function saveFoldersToCloud() {
-      google.script.run
-        .withSuccessHandler(function(res) { handleCloudSaveResult(res, 'folders'); })
-        .withFailureHandler(function(err) { console.error('Failed to save folders:', err); showToast('Could not save folders — changes may be lost on reload', 'error'); })
-        .saveCustomFolders(JSON.stringify(appFoldersList));
-    }
-
-    function saveQuickResponsesToCloud() {
-      google.script.run
-        .withSuccessHandler(function(res) { handleCloudSaveResult(res, 'quick responses'); })
-        .withFailureHandler(function(err) { console.error('Failed to save quick responses:', err); showToast('Could not save quick responses — changes may be lost on reload', 'error'); })
-        .saveQuickResponses(JSON.stringify(quickResponsesList));
-    }
+    function saveQuickResponsesToCloud() { google.script.run.saveQuickResponses(JSON.stringify(quickResponsesList)); }
 
     function openVaultModal() {
       document.getElementById('modal-backdrop-node').classList.add('active');
@@ -4289,7 +3861,7 @@
       resetVaultFormButton();
     }
 
-    let vaultSaltCache = null;
+    let vaultSaltCache = null; // cached in memory for this session once fetched from the backend
 
     async function fetchVaultSalt() {
       if (vaultSaltCache !== null) return vaultSaltCache;
@@ -4336,17 +3908,18 @@
         const legacyPass = localStorage.getItem('vaultMasterPassword');
 
         if (backendSalt) {
-
+          // Normal unlock — correctness is verified by successful decryption in transitionToActiveVault
           vaultCryptoKey = await deriveVaultKey(inputPass, backendSalt);
         } else if (localOnlySalt) {
-
+          // Salt was only ever saved to this browser — promote it to the backend now so the
+          // vault follows the account instead of disappearing on a different device/browser.
           vaultCryptoKey = await deriveVaultKey(inputPass, localOnlySalt);
           await gsRun('saveVaultSalt', localOnlySalt);
           vaultSaltCache = localOnlySalt;
           localStorage.removeItem('GE_VAULT_SALT');
           showToast('Vault access upgraded — your password now works from any device', 'success');
         } else if (legacyPass) {
-
+          // One-time migration from the old plaintext-password / weak-cipher scheme
           if (inputPass !== legacyPass) {
             document.getElementById('master-password').value = '';
             showToast('Incorrect password', 'error');
@@ -4367,7 +3940,7 @@
           await gsRun('saveVaultData', await encryptPayload(JSON.stringify(globalVaultData), vaultCryptoKey));
           showToast('Vault upgraded to AES-256 encryption', 'success');
         } else {
-
+          // Brand-new vault
           const saltBytes = crypto.getRandomValues(new Uint8Array(16));
           const saltB64 = btoa(String.fromCharCode(...saltBytes));
           vaultCryptoKey = await deriveVaultKey(inputPass, saltB64);
@@ -4402,7 +3975,7 @@
         globalVaultData = scrambled ? JSON.parse(await decryptPayload(scrambled, vaultCryptoKey)) : {};
         renderVaultItems();
       } catch (e) {
-
+        // Wrong password (GCM authentication failure) or corrupted data
         vaultCryptoKey = null;
         sessionStorage.removeItem('vaultSessionActive');
         document.getElementById('active-vault').classList.add('hidden');
@@ -4423,6 +3996,7 @@
       if (!toolName || !username || !password) { showToast('Fill in tool, username, and password', 'error'); return; }
       if (!vaultCryptoKey) { showToast('Vault session expired — please unlock again', 'error'); return; }
 
+      // If editing and the tool name changed, remove the old entry so it doesn't leave a duplicate behind
       if (editingVaultTool && editingVaultTool !== toolName) {
         delete globalVaultData[editingVaultTool];
       }
@@ -4541,16 +4115,16 @@
         }).clearAllUserData();
       }
     }
-
+    
 function copyToClipboard(textToCopy, event) {
   const targetBtn = event ? event.currentTarget : null;
-
+  
   navigator.clipboard.writeText(textToCopy).then(() => {
     if (targetBtn) {
       const originalText = targetBtn.innerText;
       targetBtn.innerText = "Copied!";
       targetBtn.style.color = "var(--neon-orange)";
-
+      
       setTimeout(() => {
         targetBtn.innerText = originalText;
         targetBtn.style.color = "";
@@ -4563,27 +4137,28 @@ function copyToClipboard(textToCopy, event) {
     function initializeCurrentDate() {
   const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
-
+  
   const dateDisplay = document.getElementById('current-date-display');
   if (dateDisplay) {
     dateDisplay.innerText = formattedDate;
   }
 }
 
+// Function to copy the date to clipboard upon button click
 function copyCurrentDate(btnElement) {
   const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
-
+  
   navigator.clipboard.writeText(formattedDate).then(() => {
     const textSpan = btnElement.querySelector('#current-date-display');
     if (textSpan) {
       const originalText = textSpan.innerText;
       textSpan.innerText = "Copied!";
       textSpan.style.color = "var(--neon-orange)";
-
+      
       setTimeout(() => {
         textSpan.innerText = originalText;
-        textSpan.style.color = "";
+        textSpan.style.color = ""; // Revert to default theme color
       }, 1500);
     }
   }).catch(err => {
@@ -4592,9 +4167,10 @@ function copyCurrentDate(btnElement) {
   });
 }
 
+// Ensure the date initializes when the application boots up
 document.addEventListener('DOMContentLoaded', () => {
   initializeCurrentDate();
 });
-</script>
+  </script>
 </body>
 </html>
