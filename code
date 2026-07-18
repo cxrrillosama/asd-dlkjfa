@@ -1,5 +1,4 @@
-
-// Single source of truth for the backing spreadsheet — avoids getActiveSpreadsheet() context loss in web apps.
+// Global Spreadsheet ID Configuration to prevent context loss errors
 const SPREADSHEET_ID = "1EikuuKnQJeCLLsy8-TCxokIC_TZ2EzaKBWFluXtaBQ4";
 
 function doGet() {
@@ -8,16 +7,21 @@ function doGet() {
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
-// Generic 2-column tab reader. Optional ss lets getStartupBundle reuse one open spreadsheet handle.
-function fetchTwoColumnData(sheetName, keyName, valueName, ss) {
+/**
+ * Helper function to reduce repetitive spreadsheet fetching code
+ * @param {string} sheetName - Name of the tab to fetch
+ * @param {string} keyName - Object property key for column 1
+ * @param {string} valueName - Object property key for column 2
+ */
+function fetchTwoColumnData(sheetName, keyName, valueName) {
   try {
-    const spreadsheet = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName(sheetName);
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(sheetName); 
     if (!sheet) return [];
-
+    
     const data = sheet.getDataRange().getValues();
     if (data.length <= 1) return [];
-
+    
     return data.slice(1).map(row => ({
       [keyName]: row[0] ? row[0].toString().trim() : '',
       [valueName]: row[1] ? row[1].toString().trim() : ''
@@ -28,29 +32,20 @@ function fetchTwoColumnData(sheetName, keyName, valueName, ss) {
   }
 }
 
-// Everything the client needs at load, in ONE google.script.run round trip (opens the spreadsheet once).
-// Client falls back to individual fetches if this fails, so a bad reader can't blank the whole app.
-function getStartupBundle() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  return {
-    fdPresets: getSpreadsheetPresets(ss),
-    workNotesPresets: getWorkNotesPresets(ss),
-    threadRequestsPresets: getThreadRequestsPresets(ss),
-    carrierPhonebook: getCarrierPhonebookData(ss),
-    portingIssues: getPortingIssuesData(ss),
-    fraudGuide: getFraudGuideData(ss)
-  };
-}
+// Rewritten presets using the helper function
+function getSpreadsheetPresets() { return fetchTwoColumnData('Templates', 'name', 'text'); }
+function getWorkNotesPresets()   { return fetchTwoColumnData('Categories', 'name', 'text'); }
 
-function getSpreadsheetPresets(ss) { return fetchTwoColumnData('Templates', 'name', 'text', ss); }
-function getWorkNotesPresets(ss)   { return fetchTwoColumnData('Categories', 'name', 'text', ss); }
-
-// 3-column reader: name, text, Chat Destination. Blank destination = note-only preset.
-// Non-blank must match a "CHAT_WEBHOOK_<destination>" Script Property (URL stays server-side).
-function getThreadRequestsPresets(ss) {
+/**
+ * Thread Requests presets get their own reader (rather than the generic 2-column helper)
+ * because they carry a third column: Chat Destination. Blank means "note only" — no Chat option
+ * for that preset. Non-blank must match the suffix of a "CHAT_WEBHOOK_<destination>" Script
+ * Property, which is where the actual webhook URL lives (kept out of the sheet on purpose).
+ */
+function getThreadRequestsPresets() {
   try {
-    const spreadsheet = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName('ThreadRequests');
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName('ThreadRequests');
     if (!sheet) return [];
 
     const data = sheet.getDataRange().getValues();
@@ -67,8 +62,13 @@ function getThreadRequestsPresets(ss) {
   }
 }
 
-// Posts to the Chat space mapped via Script Properties. Any failure returns {success:false, error}
-// so the client can fall back to inserting into the note instead of dropping the message.
+/**
+ * Posts a Thread Request's assembled text to the Google Chat space mapped to destinationKey.
+ * The mapping lives in Script Properties as "CHAT_WEBHOOK_<destinationKey>" so the webhook URL —
+ * which functions like a bearer credential for that space — never has to sit in the spreadsheet
+ * or reach the client. Any failure (missing mapping, network issue, non-2xx response) comes back
+ * as { success:false, error } so the client can fall back to inserting into the note instead.
+ */
 function sendThreadRequestToChat(messageText, destinationKey) {
   try {
     if (!destinationKey) {
@@ -80,6 +80,8 @@ function sendThreadRequestToChat(messageText, destinationKey) {
       return { success: false, error: 'No webhook configured for "' + destinationKey + '".' };
     }
 
+    // Same defensive pattern as logCallTrendingData: a missing userinfo.email scope should
+    // never block the send, it should just fall back to "Unknown" as the sender.
     let submitterEmail = 'Unknown';
     try {
       submitterEmail = Session.getActiveUser().getEmail() || 'Unknown';
@@ -107,11 +109,16 @@ function sendThreadRequestToChat(messageText, destinationKey) {
   }
 }
 
-// "Phonebook" tab, columns A-H: Carrier, NPC Phone, Care Phone, Hours, Port PIN, PIN Expiration, Account Number, Notes.
-function getCarrierPhonebookData(ss) {
+/**
+ * Fetches the carrier contact/porting list from the "Phonebook" sheet tab, for the Carrier
+ * Phonebook popup. Expected column order (matches the "Carrier Porting Information Guide"):
+ * A=Carrier, B=NPC Phone Number, C=Care Phone Number, D=Hours of Operation, E=Port PIN,
+ * F=Port PIN Expiration, G=Account Number, H=Notes.
+ */
+function getCarrierPhonebookData() {
   try {
-    const spreadsheet = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName('Phonebook');
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName('Phonebook');
     if (!sheet) return [];
 
     const data = sheet.getDataRange().getValues();
@@ -133,14 +140,22 @@ function getCarrierPhonebookData(ss) {
   }
 }
 
-// "PortingIssues" tab, one row per step, grouped/sorted by Category ID + Order columns.
-// Columns A-K: Category ID, Category Order, Category Title, Error Code, Step Order, Step Text,
-// Template Copy Text, Escalate, Escalation Description, Escalation Type, Escalation Priority.
-// Step Text syntax (parsed client-side): "- line" renders a bullet; {{label->category-id}} renders a jump link.
-function getPortingIssuesData(ss) {
+/**
+ * Fetches the porting troubleshooting reference from the "PortingIssues" sheet tab, for the
+ * Porting Issues popup. The sheet is one row per step; this groups steps under their category
+ * and sorts both categories and steps by their Order columns.
+ * Expected column order: A=Category ID, B=Category Order, C=Category Title, D=Error Code,
+ * E=Step Order, F=Step Text, G=Template Copy Text, H=Escalate, I=Escalation Description,
+ * J=Escalation Type, K=Escalation Priority.
+ *
+ * Step Text supports two bits of author-facing syntax, parsed on the client:
+ *   "- some line"                          -> renders as a bullet
+ *   "{{link text->target-category-id}}"    -> renders as a clickable cross-reference jump
+ */
+function getPortingIssuesData() {
   try {
-    const spreadsheet = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName('PortingIssues');
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName('PortingIssues');
     if (!sheet) return [];
 
     const data = sheet.getDataRange().getValues();
@@ -151,7 +166,7 @@ function getPortingIssuesData(ss) {
 
     data.slice(1).forEach(row => {
       const catId = row[0] ? row[0].toString().trim() : '';
-      if (!catId) return;
+      if (!catId) return; // skip blank/spacer rows
 
       if (!categoriesById[catId]) {
         const orderVal = row[1];
@@ -167,7 +182,7 @@ function getPortingIssuesData(ss) {
 
       const stepText = row[5] ? row[5].toString().trim() : '';
       const templateText = row[6] ? row[6].toString() : '';
-      if (!stepText && !templateText) return;
+      if (!stepText && !templateText) return; // skip placeholder rows with no step content yet
 
       const stepOrderVal = row[4];
       categoriesById[catId].steps.push({
@@ -192,18 +207,34 @@ function getPortingIssuesData(ss) {
   }
 }
 
-// "FraudTS" tab, one row per block (content is deeply nested, so raw HTML rather than plain steps).
-// Columns A-N: Section ID, Section Order, Title, Subtitle, Persistent (Yes = always-visible intro),
-// Subsection Title (blank continues previous), Block Order, Block Type, Content, Block ID,
-// Escalate Description, Escalate Type, Escalate Priority, Template Text.
-// Block Types: html | callout-warning | callout-redirect | callout-danger | escalate-def | template-def.
-// def rows never render in sequence — they supply data for [[ESCALATE:id]] / [[TEMPLATE:id]] tokens
-// inside html blocks, letting those components render at an exact nested position.
-// {{label->section-id}} renders a cross-reference jump link.
-function getFraudGuideData(ss) {
+/**
+ * Fetches the Fraud Troubleshooting guide from the "FraudTS" sheet tab, for the Fraud
+ * Troubleshooting popup. Unlike Porting Issues, this content is deeply nested (multi-level
+ * lettered/roman sub-steps, private-note templates, escalation ticket fields) rather than a flat
+ * list of steps, so the schema is one row per "block" rather than one row per step:
+ *
+ * A=Section ID, B=Section Order, C=Section Title, D=Section Subtitle, E=Persistent (Yes = always
+ * shown, not collapsible — used for the intro), F=Subsection Title (blank continues the previous
+ * subsection within the section), G=Block Order, H=Block Type, I=Content, J=Block ID,
+ * K=Escalate Description, L=Escalate Type, M=Escalate Priority, N=Template Text.
+ *
+ * Block Type is one of:
+ *   "html"            — raw HTML (ol/li/p/strong/a) inserted as-is; may contain the tokens
+ *                        {{link text->target-section-id}} (cross-reference jump),
+ *                        [[ESCALATE:block-id]] and [[TEMPLATE:block-id]] (inline components,
+ *                        resolved against escalate-def/template-def rows sharing that Block ID —
+ *                        this is what lets an escalation block or copy-template render at an
+ *                        exact nested position inside a step, rather than only ever appearing
+ *                        after a block).
+ *   "callout-warning"/"callout-redirect"/"callout-danger" — a plain-text/light-HTML callout box.
+ *   "escalate-def"    — not rendered in sequence; just supplies data (Escalate Description/Type/
+ *                        Priority) for a matching [[ESCALATE:id]] token elsewhere in the section.
+ *   "template-def"    — same idea, supplies Template Text for a [[TEMPLATE:id]] token.
+ */
+function getFraudGuideData() {
   try {
-    const spreadsheet = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = spreadsheet.getSheetByName('FraudTS');
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName('FraudTS');
     if (!sheet) return [];
 
     const data = sheet.getDataRange().getValues();
@@ -214,7 +245,7 @@ function getFraudGuideData(ss) {
 
     data.slice(1).forEach(row => {
       const sectionId = row[0] ? row[0].toString().trim() : '';
-      if (!sectionId) return;
+      if (!sectionId) return; // skip blank/spacer rows
 
       if (!sectionsById[sectionId]) {
         const orderVal = row[1];
@@ -241,6 +272,8 @@ function getFraudGuideData(ss) {
       const escPriority = row[12] ? row[12].toString().trim() : '';
       const templateText = row[13] ? row[13].toString() : '';
 
+      // Def rows are pure data — they never render in sequence, so they're keyed into defs
+      // rather than pushed onto a subsection's block list.
       if (blockType === 'escalate-def') {
         if (blockId) section.defs[blockId] = { type: 'escalate', description: escDescription, issueType: escType, priority: escPriority };
         return;
@@ -250,6 +283,8 @@ function getFraudGuideData(ss) {
         return;
       }
 
+      // A non-blank Subsection Title starts a new named subsection; a blank one continues
+      // whichever subsection was most recently opened (or starts an untitled one if none yet).
       let subsection = section.subsections.length ? section.subsections[section.subsections.length - 1] : null;
       if (subsectionTitle) {
         subsection = { title: subsectionTitle, blocks: [] };
@@ -276,6 +311,11 @@ function getFraudGuideData(ss) {
   }
 }
 
+
+/**
+ * Fetches the Escalation & Triage Guide from the "Escalation Guide" sheet tab.
+ * Expected column order: A=Escalate?, B=Category, C=Issue Type, D=Priority, E=RTS Eligible?, F=Definition.
+ */
 function getEscalationGuideData() {
   try {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -299,15 +339,17 @@ function getEscalationGuideData() {
   }
 }
 
+// Fetches data for the GE Updates Feed sidebar panel from "Updates1" tab
+// NOTE: kept for reference/fallback — the feed now pulls live from a Google Doc via getUpdatesDocFeed() below.
 function getSharedTemplates() {
   try {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    const sheet = ss.getSheetByName('Updates1');
+    const sheet = ss.getSheetByName('Updates1'); 
     if (!sheet) return ["Error: 'Updates1' sheet tab missing."];
-
+    
     const data = sheet.getDataRange().getValues();
     if (data.length < 1) return ["No updates found."];
-
+    
     return data
       .map(row => row[0] ? row[0].toString().trim() : '')
       .filter(txt => txt !== '');
@@ -316,12 +358,22 @@ function getSharedTemplates() {
   }
 }
 
-// Google Doc powering the Updates Feed: paste updates (text/images) separated by blank lines,
-// newest at top. Set this to the Doc's ID from its URL.
+// ============================================================
+// Google Doc auto-sync for the GE Updates Feed
+// ============================================================
+// Create a Google Doc where updates get pasted in (text and/or images), and separate each
+// individual update with a blank line. Replace the ID below with that Doc's ID — the long
+// string in its URL: https://docs.google.com/document/d/THIS_PART_HERE/edit
+//
+// No Cloud Console setup, no extra OAuth scopes, no consent screen changes needed — DocumentApp
+// is a standard Apps Script service and uses the same authorization this project already has.
 const UPDATES_DOC_ID = "REPLACE_WITH_YOUR_DOC_ID";
 
-// Splits the doc into feed items on blank paragraphs. Reads positioned/floating images too —
-// pasting sometimes creates those instead of inline images, and they aren't reachable via getChild().
+/**
+ * Reads the Updates Doc and turns each blank-line-separated chunk of content into one feed
+ * item, including any inline image(s) pasted directly into that chunk. Most recent update
+ * (assumed to be pasted at the top of the doc) is shown first.
+ */
 function getUpdatesDocFeed() {
   try {
     const doc = DocumentApp.openById(UPDATES_DOC_ID);
@@ -348,6 +400,7 @@ function getUpdatesDocFeed() {
       const paragraphText = paragraph.getText();
       const paragraphImages = [];
 
+      // Inline images — embedded directly in the text flow
       const numPieces = paragraph.getNumChildren();
       for (let j = 0; j < numPieces; j++) {
         const piece = paragraph.getChild(j);
@@ -362,6 +415,9 @@ function getUpdatesDocFeed() {
         }
       }
 
+      // Positioned/floating images — pasting sometimes creates these instead of inline images,
+      // and they aren't reachable via getChild(), which was the root cause of images ending up
+      // misattributed to the wrong (usually last) entry.
       const positionedIds = paragraph.getPositionedImageIds ? paragraph.getPositionedImageIds() : [];
       positionedIds.forEach(id => {
         try {
@@ -377,7 +433,7 @@ function getUpdatesDocFeed() {
       const isBlankParagraph = paragraphText.trim() === '' && paragraphImages.length === 0;
 
       if (isBlankParagraph) {
-
+        // A genuinely empty line (no text, no image at all) = separator between updates
         flushCurrentItem();
         continue;
       }
@@ -389,7 +445,7 @@ function getUpdatesDocFeed() {
     }
     flushCurrentItem();
 
-    feedItems.reverse();
+    feedItems.reverse(); // newest-pasted-at-top shows first
 
     return {
       success: true,
@@ -401,7 +457,11 @@ function getUpdatesDocFeed() {
   }
 }
 
-// All user-property writes route through here so quota failures surface as {success:false, error}.
+// --- Properties Service (User-Specific Data) ---
+
+/**
+ * Helper function to save user properties with quota error handling
+ */
 function saveUserProperty(key, value) {
   try {
     PropertiesService.getUserProperties().setProperty(key, value);
@@ -424,17 +484,25 @@ function saveCustomFolders(jsonString) { return saveUserProperty('GE_CUSTOM_FOLD
 function loadVaultData() { return PropertiesService.getUserProperties().getProperty('GE_SECURE_VAULT') || ''; }
 function saveVaultData(scrambledPayload) { return saveUserProperty('GE_SECURE_VAULT', scrambledPayload); }
 
-// Salt MUST live server-side: same password + different salt = different key, so a
-// localStorage salt makes the vault undecryptable from any other browser/device.
+// The encryption salt used to derive the vault's decryption key from the master password.
+// This MUST be stored server-side (not localStorage) — otherwise a user's vault becomes
+// permanently undecryptable the moment they log in from a different browser/device, even
+// with the correct master password, since the same password + a different salt produces a
+// different key. This was the root cause of the "logged back in, password data missing" bug.
 function getVaultSalt() { return PropertiesService.getUserProperties().getProperty('GE_VAULT_SALT') || ''; }
 function saveVaultSalt(saltB64) { return saveUserProperty('GE_VAULT_SALT', saltB64); }
 
+// Custom note/reply templates (previously stored only in the browser's localStorage,
+// which is why they disappeared after a cache clear or on a different machine)
 function getCustomPresets() { return PropertiesService.getUserProperties().getProperty('GE_CUSTOM_PRESETS') || '[]'; }
 function saveCustomPresets(jsonString) { return saveUserProperty('GE_CUSTOM_PRESETS', jsonString); }
 
+// Email signatures (two slots) — same reasoning as above, now synced per Google account
 function getSignatures() { return PropertiesService.getUserProperties().getProperty('GE_SIGNATURES') || '{}'; }
 function saveSignatures(jsonString) { return saveUserProperty('GE_SIGNATURES', jsonString); }
 
+// Custom quick links (sidebar shortcut buttons). Preset links (Gmail/Sheets) are defined
+// client-side and aren't stored here — only user-added custom ones are.
 function getQuickLinks() { return PropertiesService.getUserProperties().getProperty('GE_QUICK_LINKS') || '[]'; }
 function saveQuickLinks(jsonString) { return saveUserProperty('GE_QUICK_LINKS', jsonString); }
 
@@ -450,18 +518,25 @@ function clearAllUserData() {
   props.deleteProperty('GE_QUICK_LINKS');
 }
 
-// LockService-guarded append. Backfills the Account Number column on sheets created before it existed.
+/**
+ * Saves call trending metadata to the "Call Trending" sheet tab safely using LockService.
+ * Automatically backfills the "Account Number" column on sheets created before that
+ * field existed, so existing data isn't shifted or misaligned.
+ */
 function logCallTrendingData(trendingData) {
   const lock = LockService.getScriptLock();
 
   try {
-
+    // Wait for up to 3 seconds for other script executions to finish modifying the sheet
     lock.waitLock(3000);
 
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     let sheet = ss.getSheetByName("Call Trending");
     const headers = ["Timestamp", "Submitted By", "Account Number", "Call Type", "Trend Reason", "Resolution", "Additional Details / Notes"];
 
+    // Session.getActiveUser() requires the userinfo.email OAuth scope. If that scope isn't
+    // authorized on this deployment (or a user hasn't re-consented after a scope change), this
+    // throws — but a missing "Submitted By" name is not worth losing the whole trend log over.
     let submitterEmail = "Unknown";
     try {
       submitterEmail = Session.getActiveUser().getEmail() || "Unknown";
@@ -477,6 +552,7 @@ function logCallTrendingData(trendingData) {
       let lastCol = Math.max(sheet.getLastColumn(), 1);
       let currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
 
+      // Backfill the Submitted By column for sheets created before this field existed
       if (currentHeaders.indexOf("Submitted By") === -1) {
         sheet.insertColumnAfter(1);
         sheet.getRange(1, 2, 1, 1)
@@ -486,8 +562,9 @@ function logCallTrendingData(trendingData) {
         currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
       }
 
+      // Backfill the Account Number column for sheets created before this field existed
       if (currentHeaders.indexOf("Account Number") === -1) {
-        const submittedByCol = currentHeaders.indexOf("Submitted By") + 1;
+        const submittedByCol = currentHeaders.indexOf("Submitted By") + 1; // 1-based column index
         const insertAfterCol = submittedByCol > 0 ? submittedByCol : 1;
         sheet.insertColumnAfter(insertAfterCol);
         sheet.getRange(1, insertAfterCol + 1, 1, 1)
@@ -497,8 +574,9 @@ function logCallTrendingData(trendingData) {
         currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
       }
 
+      // Backfill the Resolution column for sheets created before this field existed
       if (currentHeaders.indexOf("Resolution") === -1) {
-        const trendReasonCol = currentHeaders.indexOf("Trend Reason") + 1;
+        const trendReasonCol = currentHeaders.indexOf("Trend Reason") + 1; // 1-based column index
         const insertAfterCol = trendReasonCol > 0 ? trendReasonCol : lastCol;
         sheet.insertColumnAfter(insertAfterCol);
         sheet.getRange(1, insertAfterCol + 1, 1, 1)
@@ -522,13 +600,15 @@ function logCallTrendingData(trendingData) {
     console.error("Error logging call trending data: ", error);
     return { success: false, error: error.toString() };
   } finally {
-
+    // Always release the lock so other executions can proceed, even if an error occurred
     lock.releaseLock();
   }
 }
 
-// LockService-guarded append. Stamps submitter email server-side; falls back to "Unknown"
-// rather than blocking the submission if the userinfo.email scope is unavailable.
+/**
+ * Saves anonymous user feedback to the "Feedback" sheet tab, following the same
+ * safe-append pattern as logCallTrendingData. No identifying information is stored.
+ */
 function submitFeedbackData(feedbackData) {
   const lock = LockService.getScriptLock();
 
@@ -545,6 +625,8 @@ function submitFeedbackData(feedbackData) {
       sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#26262b").setFontColor("#f5f5f7");
     }
 
+    // Same defensive pattern as Call Trending / Chat sends: a missing userinfo.email scope
+    // should never block the submission, it should just fall back to "Unknown" as the submitter.
     let submitterEmail = "Unknown";
     try {
       submitterEmail = Session.getActiveUser().getEmail() || "Unknown";
