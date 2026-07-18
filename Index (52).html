@@ -716,16 +716,17 @@
     .qr-preview-inner { overflow: hidden; }
     .qr-deck-card:hover .qr-preview-wrap { grid-template-rows: 1fr; transition: grid-template-rows 0.22s var(--ease-out-expo) var(--qr-preview-delay); }
 
-    /* Folder badge shown on each card only while the "All" filter is active, so users can tell
-       at a glance which folder a response lives in without having to switch filters. */
-    .qr-folder-tag {
-      display: none; align-items: center; gap: 4px; font-size: 9.5px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);
-      background: var(--bg-main); border: 1px solid var(--border-dark); border-radius: 5px;
-      padding: 2px 6px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px;
-    }
-    .qr-folder-tag .material-icons-round { font-size: 10px !important; flex-shrink: 0; }
-    .quick-response-cards-node.show-folder-tags .qr-folder-tag { display: flex; }
+    /* Folder color-coding: shown only while the "All" filter is active. Each folder gets a
+       stable color (hashed from its name in JS) so users can tell folders apart at a glance
+       without repeating the folder name as text on every card. The stripe only appears when
+       .folder-striped is present so a single/Favs-filtered view (already all one folder) stays
+       plain — border-left-color is set inline per card since colors are assigned dynamically. */
+    .qr-deck-card { border-left: 1px solid var(--border-dark); transition: var(--transition-smooth), border-left-width 0.15s ease; }
+    .qr-deck-card.folder-striped { border-left-width: 3px; }
+
+    .qr-folder-legend { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 10px 10px 10px; }
+    .qr-folder-legend-chip { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); background: var(--bg-main); border: 1px solid var(--border-dark); border-radius: 10px; padding: 3px 8px 3px 6px; }
+    .qr-folder-legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
     .item-select-checkbox { margin-right: 8px; accent-color: var(--neon-orange); cursor: pointer; }
 
@@ -918,6 +919,7 @@
             <button class="btn btn-outline" style="border-radius: var(--radius-md); padding: 8px 12px; font-size: 12px; text-transform:none; width: 100%; text-align: center; display:flex; align-items:center; justify-content:center; gap:6px;" onclick="openAddResponseModal()"><span class="material-icons-round" style="font-size:16px !important;">add</span>Add Macro</button>
           </div>
 
+          <div class="qr-folder-legend hidden" id="qr-folder-legend"></div>
           <div class="quick-response-cards-node" id="quick-response-cards-node"></div>
         </div>
       </div>
@@ -3732,14 +3734,25 @@
       setQuickResponseCategory(activeQRFilterCategory);
     }
 
+    // Stable color per folder name (hashed, not stored) so the stripe/legend colors stay
+    // consistent across sessions and across users without any manual color configuration.
+    const QR_FOLDER_PALETTE = ['#f87171','#fb923c','#fbbf24','#a3e635','#34d399','#22d3ee','#60a5fa','#a78bfa','#f472b6','#94a3b8'];
+    function colorForFolder(name) {
+      const str = (name || '').trim().toLowerCase();
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) { hash = (hash * 31 + str.charCodeAt(i)) >>> 0; }
+      return QR_FOLDER_PALETTE[hash % QR_FOLDER_PALETTE.length];
+    }
+
     function renderQuickResponsesDashboard() {
       const container = document.getElementById('quick-response-cards-node');
+      const legend = document.getElementById('qr-folder-legend');
       if (!container) return;
       container.innerHTML = '';
 
-      // Folder badges only make sense when "All" is showing responses from every folder mixed
-      // together — in a single-folder or Favs view they'd just repeat the same tag on every card.
-      container.classList.toggle('show-folder-tags', activeQRFilterCategory === 'all');
+      // Folder coloring only makes sense when "All" is showing responses from every folder mixed
+      // together — in a single-folder or Favs view every card would just be the same color.
+      const showFolderColors = activeQRFilterCategory === 'all';
 
       const normalize = s => (s || '').trim().toLowerCase();
       const visibleItems = quickResponsesList
@@ -3750,17 +3763,33 @@
         })
         .sort((a, b) => (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0));
 
+      if (legend) {
+        if (showFolderColors) {
+          const foldersInView = [...new Set(visibleItems.map(qr => qr.category || ''))].filter(Boolean).sort();
+          legend.innerHTML = foldersInView.map(folder => `
+            <span class="qr-folder-legend-chip"><span class="qr-folder-legend-dot" style="background:${colorForFolder(folder)}"></span>${escapeCarrierHtml(folder)}</span>
+          `).join('');
+          legend.classList.toggle('hidden', foldersInView.length === 0);
+        } else {
+          legend.classList.add('hidden');
+          legend.innerHTML = '';
+        }
+      }
+
       visibleItems.forEach(qr => {
         const titlePart = qr.title ? qr.title : (qr.text.split('-')[0] || qr.text).trim();
-        const folderTagHtml = `<span class="qr-folder-tag" title="Folder: ${escapeCarrierHtml(qr.category || '')}"><span class="material-icons-round">folder</span><span>${escapeCarrierHtml(qr.category || '')}</span></span>`;
         const card = document.createElement('div');
-        card.className = 'qr-deck-card';
-        card.title = 'Click to copy to clipboard';
+        card.className = 'qr-deck-card' + (showFolderColors ? ' folder-striped' : '');
+        if (showFolderColors) {
+          card.style.borderLeftColor = colorForFolder(qr.category);
+          card.title = 'Folder: ' + (qr.category || '') + ' — Click to copy to clipboard';
+        } else {
+          card.title = 'Click to copy to clipboard';
+        }
         card.onclick = () => navigator.clipboard.writeText(qr.text).then(() => showToast('Copied to clipboard', 'success'));
         card.innerHTML = `
           <div class="qr-deck-card-head">
             <div style="font-weight:700; font-size:11.5px; color:var(--neon-orange); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;">${titlePart}</div>
-            ${folderTagHtml}
             <span class="material-icons-round qr-action-icon${qr.favorite ? ' active' : ''}" title="Toggle favorite" data-role="fav">${qr.favorite ? 'star' : 'star_outline'}</span>
             <span class="material-icons-round qr-action-icon" title="Copy to clipboard" data-role="copy">content_copy</span>
             <span class="material-icons-round qr-action-icon" title="Edit" data-role="edit">edit</span>
