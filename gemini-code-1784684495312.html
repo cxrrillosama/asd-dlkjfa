@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Service Support Workflow</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .widget-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .block-html > div {
+            width: 100% !important; /* Overriding 65% for improved readability on desktop/mobile */
+        }
+
+        details {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        summary.accordion {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 14px 18px;
+            background-color: #f1f3f5;
+            color: #1a1a1a;
+            cursor: pointer;
+            user-select: none;
+            outline: none;
+            transition: background-color 0.2s ease;
+        }
+
+        summary.accordion:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Distinct styling for Communication Expectations header */
+        summary.accordion.header-notice {
+            background-color: #e7f5ff;
+            color: #0c85d0;
+            border-left: 4px solid #1c7ed6;
+        }
+
+        summary.accordion.header-notice:hover {
+            background-color: #d0ebff;
+        }
+
+        .panel {
+            padding: 16px 20px;
+            background-color: #ffffff;
+            transition: max-height 0.2s ease-out;
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #2b2b2b;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 4px;
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            color: #111111;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="widget-content-6584f804-e825-5ed7-9aa1-b2a670c42b10" class="widget-content widget-content--v2 widget-content--block-html" dir="auto" tabindex="-1">
+        <div class="block-html" dir="auto">
+            <div style="width:65%;">
+                
+                <!-- Communication Expectations Section -->
+                <details open="">
+                    <summary class="accordion header-notice active">Communication Expectations</summary>
+                    <div class="panel" style="max-height: 500px;">
+                        <p><strong>Treat these communications with a white glove and a high sense of urgency.</strong></p>
+                        <ul>
+                            <li><strong>CM Updates</strong>: CM will provide updates when available.</li>
+                            <li><strong>Email Verification</strong>: Verify Email Address with the customer. If it is going to be delayed (SC or B&amp;C, WO3P), communicate with the customer to pay attention to their email.</li>
+                            <li><strong>CSIT Escalations</strong>: If a CSIT is Urgent, after 3 hours, submit a CSIT Escalation Form to Leadership.</li>
+                            <li><strong>After-Hours Policy</strong>: If resolution is not met after 4 hours and is past 10 PM EST, communicate to the customer we will contact them next day.</li>
+                            <li><strong>Ticket Closure</strong>: If no contact is made after 2 attempts, close the ticket.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details open="">
+                    <summary class="accordion active">1. Opening the Call</summary>
+                    <div class="panel" style="max-height: 767px;">
+                        <p><strong>Goal</strong>: Greet the customer, establish ownership, and verify the account status.</p>
+                        <ul>
+                            <li><strong>Initial Greeting</strong>: "Thank you for contacting No Service Support, my name is XXXXXX - Can I please get your name?"</li>
+                            <li><strong>Ownership Note</strong>: The CM who receives the call takes ownership of all communications and closes the loop. If the CM is out, the Service Partner will assist.</li>
+                            <li><strong>Set Expectations</strong>: Greet the customer, set expectations, and authenticate the account (If Required).
+                                <ul>
+                                    <li>Authentication is required to perform the following actions, reference <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/8232123333356349/82063" rel="noopener noreferrer" target="_blank">WCM Best Practices</a>
+                                        <ul>
+                                            <li>SIM Swap</li>
+                                            <li>Request for a Port Out PIN</li>
+                                            <li>Device swap with an eSIM</li>
+                                            <li>Changing any personal identifiable information</li>
+                                            <li>Name, email address, home address, bank information, credit card information</li>
+                                            <li>Adding a Line (Customer is requesting a new line in addition to the original lines on the account)
+                                                <ul>
+                                                    <li>Exception: If adding a line is needed to fix another issue but will be disconnected, the account does not need to be authenticated.</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Language Barrier</strong>: If the customer requests a Spanish-speaking CM or a language barrier exists, follow the appropriate transfer protocols.</li>
+                            <li><strong>Documentation</strong>: If the issue needs escalation to another team (Fraud, B&amp;C, Service Continuity, etc.) or follow-up from a Case Manager is required, including because the call was disconnected during troubleshooting, a ticket <strong>must&nbsp;</strong>be created.
+                                <ul>
+                                    <li>Upon ticket creation, add the Transfer Accepted Tag.&nbsp;</li>
+                                    <li>Add the Verified tag after verification has been completed.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details open="">
+                    <summary class="accordion active">2. Check for Account Issues</summary>
+                    <div class="panel" style="max-height: 767px;">
+                        <p><strong>Goal</strong>: Determine if the problem is administrative, billing-related, or a known system-wide outage.</p>
+                        <ul>
+                            <li><strong>Review Interactions</strong>: Check the <strong>Insights Skittle</strong> for recent, relevant interactions.</li>
+                            <li><strong>Ticket History</strong>: Check <strong>Freshdesk&nbsp;</strong>for existing tickets for the same issue.
+                                <ul>
+                                    <li>If yes, continue from where the last CM left off.</li>
+                                    <li>If none, proceed.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Known Issues</strong>: Check for matches in <a href="https://wireless-lumapps.dish.com/cxo-knowledge-wireless/50081" rel="noopener noreferrer" target="_blank">Known Issues</a> or the <strong>!WCM Updates</strong> thread.</li>
+                            <li><strong>Line Status</strong>: Verify if the line is <strong>Active&nbsp;</strong>in all relevant tools:
+                                <ul>
+                                    <li>Level 1: CApp | Level 2: Paddock | Level 3: Network (Telegence, NextGen, or Customer Portal).
+                                        <ul>
+                                            <li>If Not Active - Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/2512622073590831/82064" rel="noopener noreferrer" target="_blank">Suspended After Payment</a> If the customer is suspended after paying monthly charges or after a Payment Extension request.</li>
+                                            <li>If Active in all three levels, proceed</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>App/Web Access</strong>: Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/2664467242992491/82050" rel="noopener noreferrer" target="_blank">Mobile App/Website Issues</a> if the customer is having issues logging into the Boost Mobile app or website</li>
+                            <li><strong>Point of Sale Unlock</strong>: Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/1288015811469278/55078" rel="noopener noreferrer" target="_blank">Point of Sale Unlock Request</a> if this a point of sale unlock request</li>
+                            <li><strong>Account Takeover</strong>: Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/1479147549081077/82069" rel="noopener noreferrer" target="_blank">Fraud Tickets</a> if the customer is reporting an Account Takeover</li>
+                            <li><strong>Porting Error</strong>: Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/5261023417550613/82026" rel="noopener noreferrer" target="_blank">Porting Issues</a> if there is a Porting error in CApp</li>
+                            <li><strong>International Services</strong>: Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/310648926404981/82009" rel="noopener noreferrer" target="_blank">International Services Support</a> if the customer is reporting issues with any international service</li>
+                            <li><strong>BBB/FCC/Executive Complaint</strong>: Assist using standard “No Service” procedures and work to resolve the situation.
+                                <ul>
+                                    <li>If we are unable to resolve and the threat of escalation still exists, engage Leadership to escalate to Charles McKay’s Team.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details open="">
+                    <summary class="accordion active">3. Check Coverage</summary>
+                    <div class="panel" style="max-height: 955px;">
+                        <p><strong>Goal</strong>: Identify if the lack of service is caused by the location, network outages, or device-network compatibility.</p>
+                        <h3>Tower Outages:</h3>
+                        <ul>
+                            <li><strong>AT&amp;T/HMN</strong>: Check <a href="http://att-mti.dish.com/mti/csr/" rel="noopener noreferrer" target="_blank">MTI</a> and <a href="https://www.att.com/outages/" rel="noopener noreferrer" target="_blank">AT&amp;T Consumer site</a>. Zoom to a 5-mile radius.</li>
+                            <li><strong>TMO</strong>: use Coverage -&gt; Check Coverage on <a href="https://wholesalesupport.t-mobile.com/tm_csm_wholesale" rel="noopener noreferrer" target="_blank">WSP</a> (Site Performance/Maintenance/Tickets must all be Green).
+                                <ul>
+                                    <li>If there is an outage, advise the customer that outages are usually resolved within 3-5 days.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h3>Device Eligibility &amp; Compatibility:</h3>
+                        <ul>
+                            <li><strong>Network Compatibility</strong>: Use <strong>Customer App &gt; Device Check</strong> to ensure the IMEI is compatible with the current network
+                                <ul>
+                                    <li>If incompatible, either a <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/6542346587135621/82041" rel="noopener noreferrer" target="_blank">Network Switch</a> to a compatible network or a device swap to a compatible device is required.</li>
+                                </ul>
+                            </li>
+                            <li><strong>International Models</strong>: Obtain the device model number via <strong>SCOUT&nbsp;</strong>and search using Google.&nbsp;
+                                <ul>
+                                    <li>Example: model # is A3410 for a Chinese iPhone 16e, Model # is A3212 for a US iPhone 16e.</li>
+                                    <li>International models may have partial compatibility with US networks &amp; there is no guarantee that it will work.&nbsp;</li>
+                                    <li>Our systems frequently show T-Mobile compatibility for these devices even though they actually have partial compatibility.</li>
+                                    <li>Do not perform a Network Switch or submit a Network Ticket</li>
+                                    <li>If troubleshooting fails, Advise a device swap to a compatible device is required.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <h3>Coverage Mapping:</h3>
+                        <ul>
+                            <li><strong>AT&amp;T/HMN</strong>: Use Hexbin. Green = Proceed; Blue or No Hex = Check location impact; Red = <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/6542346587135621/82041" rel="noopener noreferrer" target="_blank">Network Switch</a>.
+                                <ul>
+                                    <li><strong>Location Impact</strong>: Is the customer in a <strong>High Impact Location</strong> (Home/Work)? If yes, perform a <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/6542346587135621/82041" rel="noopener noreferrer" target="_blank">Network Switch</a>.</li>
+                                </ul>
+                            </li>
+                            <li><strong>TMO</strong>: Use Coverage &gt; Check Coverage on <a href="https://wholesalesupport.t-mobile.com/tm_csm_wholesale" rel="noopener noreferrer" target="_blank">WSP</a>. If Coverage is Green = Proceed, Orange/Red = <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/6542346587135621/82041" rel="noopener noreferrer" target="_blank">Network Switch</a>.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details open="">
+                    <summary class="accordion active">4. Device Troubleshooting</summary>
+                    <div class="panel" style="max-height: 3011px;">
+                        <p><strong>Goal</strong>: Verify hardware settings, SIM health, and perform physical resets.</p>
+                        <ul>
+                            <li><strong>Physical Inspection</strong>: Check for external/physical/liquid damage.
+                                <ul>
+                                    <li>If the issue began with damage to the device, recommend replacement.</li>
+                                    <li>Remove heavy-duty or metallic cases to test reception.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Partial Service Issues on the T-Mobile Network</strong>
+                                <ul>
+                                    <li>Advanced Tech agents will perform all necessary steps before creating a WSP ticket, but they will not create the ticket.
+                                        <ul>
+                                            <li>Confirm the previous agent performed troubleshooting steps. Do not have the customer complete them a second time</li>
+                                        </ul>
+                                    </li>
+                                    <li>Create an Advanced Corporate Support (ACS) ticket for the issue</li>
+                                    <li>Create a WSP ticket to escalate the issue to T-Mobile
+                                        <ul>
+                                            <li>Open WSP and login</li>
+                                            <li>Select Create a Case &gt; Report an Issue &gt; Single Subscriber</li>
+                                            <li>Select the applicable issue from the Tell us more about your issue and Which error best describes your issue drop downs</li>
+                                            <li>Complete the remaining fields and submit the ticket</li>
+                                        </ul>
+                                    </li>
+                                    <li>Note the WSP Ticket number (CSXXXXXXX) in your Freshdesk ticket notes</li>
+                                    <li>Provide the customer with their Freshdesk ticket number and send the IT Escalation email</li>
+                                    <li>Place the ticket into Waiting on Third Party status</li>
+                                </ul>
+                            </li>
+                            <li><strong>Check for Carrier lock and TSA lock</strong>:
+                                <ul>
+                                    <li><strong>BYOD vs. RW-Boost</strong>: Use <strong>SCOUT&nbsp;</strong>to determine if the device is BYOD or RW-BOOST.
+                                        <ul>
+                                            <li><strong>If BYOD</strong>
+                                                <ul>
+                                                    <li><strong>Lock Status</strong>: Use <strong>Booster&nbsp;</strong>for steps to check if the device is locked to another carrier.</li>
+                                                </ul>
+                                            </li>
+                                            <li><strong>If RW-Boost</strong>
+                                                <ul>
+                                                    <li><strong>TSA Lock</strong>: Check <strong>SCOUT (Carrier Locked Status)</strong> for Android or <strong>PIMS (Next Tether Policy)</strong> for Apple.
+                                                        <ul>
+                                                            <li>Android
+                                                                <ul>
+                                                                    <li>SCOUT -&gt; Device &amp; SIMs -&gt; SILS Search -&gt; Search IMEI -&gt; Carrier Locked Status</li>
+                                                                    <li>If TSA_UNLOCKED, move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/5527069404767151/82030" rel="noopener noreferrer" target="_blank">TSA Locked Device</a></li>
+                                                                </ul>
+                                                            </li>
+                                                            <li>Apple
+                                                                <ul>
+                                                                    <li>SCOUT -&gt; PIMS Support -&gt; Device Research -&gt; Search IMEI -&gt; Next Tether Policy Details
+                                                                        <ul>
+                                                                            <li>If US Sprint/T-Mobile Locked Policy or US Sprint/MVNO Locked Policy, move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/ls/content/5527069404767151/82030" rel="noopener noreferrer" target="_blank">TSA Locked Device</a></li>
+                                                                        </ul>
+                                                                    </li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>SIM Matching</strong>: Verify if the <strong>ICCID&nbsp;</strong>(and <strong>IMEI&nbsp;</strong>for eSIM) matches the Network Tool (Telegence/NextGen/Customer Portal).
+                                <ul>
+                                    <li>If it does not match, activate the correct Device &amp; SIM. Move to <a href="https://wireless-lumapps.dish.com/wireless-case-management/80089" rel="noopener noreferrer" target="_blank">Device Swap issues</a></li>
+                                </ul>
+                            </li>
+                            <li><strong>Device Settings</strong>:
+                                <ul>
+                                    <li><strong>Cellular Enabled</strong>: Ensure Airplane mode is OFF and Cellular service is ON.</li>
+                                    <li><strong>Dual SIM Management</strong>: Ensure the correct Boost PTN/SIM is selected for Data and Voice. Disable old/unwanted PTNs.
+                                        <ul>
+                                            <li>Apple
+                                                <ul>
+                                                    <li>Settings App -&gt; Cellular
+                                                        <ul>
+                                                            <li>Make sure the correct Boost PTN is enabled (Turn on This Line toggled on)</li>
+                                                            <li>Choose the default line for cellular data—tap Cellular Data, then tap the desired line</li>
+                                                            <li>Choose the default line for voice calls—tap Default Voice Line, then tap desired line</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>Android
+                                                <ul>
+                                                    <li>Settings -&gt; Network &amp; Internet or Connections -&gt; SIM or Sim Manager
+                                                        <ul>
+                                                            <li>Make sure the desired SIM is enabled</li>
+                                                            <li>Select the correct preferred SIM card for Calls, Text Messages, and Mobile Data (This option may not be visible if only one SIM is installed)</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>Disable any unwanted PTNs/SIMs no longer in use from a previous carrier</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Signal Indicators</strong>: Check bars (has bars vs. SOS/Emergency Calls Only/No SIM)</li>
+                            <li><strong>The "Quick Fixes"</strong>:
+                                <ul>
+                                    <li><strong>Toggle Airplane Mode</strong>: On for 15 seconds, then Off.
+                                        <ul>
+                                            <li>Turning Airplane mode on will Power down the RF and Transceiver in the device and terminate the active session with both the network core &amp; tower. Once turned off, the phone will re-attach to the strongest available tower and reinitiate the handshake procedure with the network core.&nbsp;
+                                                <ul>
+                                                    <li>After this step is performed, the tower will treat the device with a higher than normal priority for network traffic in order to establish the connection. It will move the device back to the standard priority level after three minutes.</li>
+                                                </ul>
+                                            </li>
+                                            <li>If this step appears to resolve the issue, wait three minutes to ensure the resolution is not a temporary fix.&nbsp;</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Power Cycle</strong>: Full Power Off for 30 seconds, then Power On.
+                                        <ul>
+                                            <li>Perform this step <strong>ONLY&nbsp;</strong>if the device feels sluggish, unresponsive, the device is hot to the touch, or the battery drains quickly. These symptoms are indicative of a potential device issue.</li>
+                                        </ul>
+                                    </li>
+                                    <li>If these steps are a temporary fix, proceed to the next step.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Android Only: Install the Boost Config App</strong>
+                                <ul>
+                                    <li>If the device is <strong>Android and BYOD</strong>, confirm that the <strong>Boost Config App</strong> has been downloaded and installed on the device.
+                                        <ul>
+                                            <li><strong>Yes&nbsp;</strong>- Use Ozmo to ensure that the Boost APN is selected in the device’s setting</li>
+                                            <li><strong>No&nbsp;</strong>- Install the Boost Config App
+                                                <ul>
+                                                    <li>Connect to Wi-Fi &gt; Download Boost Config App &gt; Install &gt; Restart Device</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>Note: If the customer is unable to connect to WiFi, the APNs must be manually entered. Ask Booster how to enter the appropriate network’s APNs on the device.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Apple Only: Update Carrier bundle &amp; Software</strong>
+                                <ul>
+                                    <li>Ensure that the software is <strong>iOS 18.4</strong> or above and that there are no carrier updates available.&nbsp;
+                                        <ul>
+                                            <li>You will have to connect to a WiFi network for the update.&nbsp;</li>
+                                            <li>The customer may need to manage their device’s storage to have enough room to download the update.</li>
+                                            <li><strong>Update Software:</strong> Settings &gt; General &gt; Software Update&gt; Update Now</li>
+                                            <li><strong>Carrier Settings</strong>: Go to Settings &gt; General &gt; About &gt; wait 30 seconds for the pop-up.</li>
+                                            <li>Beta software is not supported.
+                                                <ul>
+                                                    <li>Go to General &gt; Software Update &gt; Beta Updates &gt; Off</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><strong>Technical Symptom redirection</strong>:&nbsp;
+                                <ul>
+                                    <li>Troubleshoot any remaining issues in this order:&nbsp;
+                                        <ul>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/80090" rel="noopener noreferrer" target="_blank">No Sim Detected</a></li>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/82053" rel="noopener noreferrer" target="_blank">SIM not supported</a></li>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/80091" rel="noopener noreferrer" target="_blank">SOS/Emergency Calls Only</a></li>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/80093" rel="noopener noreferrer" target="_blank">Voice</a></li>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/80092" rel="noopener noreferrer" target="_blank">Data</a></li>
+                                            <li><a href="https://wireless-lumapps.dish.com/wireless-case-management/80094" rel="noopener noreferrer" target="_blank">Messaging</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details open="">
+                    <summary class="accordion active">5. After service is restored</summary>
+                    <div class="panel" style="max-height: 460px;">
+                        <ol>
+                            <li>If the Issue was resolved on the call and a ticket was created
+                                <ol style="list-style-type: lower-alpha;">
+                                    <li>Click the checkbox “Resolved by Live CM”</li>
+                                    <li><strong>Continue</strong></li>
+                                </ol>
+                            </li>
+                            <li>Only had Service issue
+                                <ol style="list-style-type: lower-alpha;">
+                                    <li>Add note on the account and ticket work notes.</li>
+                                    <li>Resolve ticket following normal steps.</li>
+                                    <li><strong>Do not</strong> change the <strong>Does the Customer Currently Have Service?</strong> field.</li>
+                                </ol>
+                            </li>
+                            <li>If the service issue is resolved but needs an account clean up.
+                                <ol style="list-style-type: lower-alpha;">
+                                    <li>Add Note on the account.</li>
+                                    <li>Change <strong>Status&nbsp;</strong>of ticket to appropriate status (waiting on third party, tied to inc, etc.).</li>
+                                    <li>Change <strong>Support Status</strong> of ticket to <strong>Reconciliation&nbsp;</strong>(will not impact SLA Alarms).</li>
+                                    <li>Transfer the ticket to the WCM 2/3 group.</li>
+                                    <li>When the ticket is ready to be resolved, update the Status (not <strong>Support Status</strong>).</li>
+                                    <li><strong>Do not</strong> change the <strong>Does the Customer Currently Have Service?</strong> field.</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <script>
+            try { 
+                var acc = document.getElementsByClassName("accordion");
+                var i;
+
+                for (i = 0; i < acc.length; i++) {
+                    acc[i].addEventListener("click", function() {
+                        this.classList.toggle("active");
+                        var panel = this.nextElementSibling;
+                        if (panel.style.maxHeight) {
+                            panel.style.maxHeight = null;
+                        } else {
+                            panel.style.maxHeight = panel.scrollHeight + "px";
+                        }
+                    });
+                }
+            } catch (excp) { 
+                console.warn(excp); 
+            }
+        </script>
+    </div>
+
+</body>
+</html>
